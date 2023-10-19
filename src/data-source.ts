@@ -1,12 +1,10 @@
 import { DataSource } from "typeorm";
-import { Player } from "./entity/player";
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: "./db/fortaleza-rankings",
+    database: "./database/db",
     synchronize: true,
     logging: false,
-    entities: [Player],
-    subscribers: [],
-    migrations: [],
+    entities: ["src/entity/**/*.ts"],
+    migrations: ["database/migrations/**/*.ts"],
 });
