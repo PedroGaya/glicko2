@@ -175,5 +175,5 @@ dist
 .DS_Store
 
 # Database
-db
-db/*
+prisma/dev.db
+prisma/dev.db-journal

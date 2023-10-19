@@ -1,8 +1,14 @@
-import "reflect-metadata";
-import { AppDataSource } from "./data-source";
+import { PrismaClient } from "@prisma/client";
 
-AppDataSource.initialize()
-    .then(() => {
-        console.log("We're so fucking back bros");
-    })
-    .catch((error) => console.log(error));
+const prisma = new PrismaClient();
+
+// create a new user
+await prisma.user.create({
+    data: {
+        name: "John Dough",
+    },
+});
+
+// count the number of users
+const count = await prisma.user.count();
+console.log(`There are ${count} users in the database.`);
