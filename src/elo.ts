@@ -2,7 +2,11 @@ import { Match } from "./types";
 
 class Elo {
     private updateElo(m: Match) {
-        const { P1, P2, score } = m;
+        const { players, score } = m;
+
+        const P1 = players[0];
+        const P2 = players[1];
+
         const p1s = score; // Actual score for p1
         const p2s = 1 - score; // Actual score for p2
 
