@@ -3,7 +3,6 @@ import { Glicko2 } from "./glicko2";
 import { Elo } from "./elo";
 
 const player: Rating = {
-    ladderId: 0,
     elo: {
         rating: 1000,
         k_value: 32,
@@ -17,7 +16,6 @@ const player: Rating = {
 
 const opponents: Rating[] = [
     {
-        ladderId: 0,
         elo: {
             rating: 1000,
             k_value: 32,
@@ -29,7 +27,6 @@ const opponents: Rating[] = [
         },
     },
     {
-        ladderId: 0,
         elo: {
             rating: 1000,
             k_value: 32,
@@ -41,7 +38,6 @@ const opponents: Rating[] = [
         },
     },
     {
-        ladderId: 0,
         elo: {
             rating: 1000,
             k_value: 32,
@@ -56,20 +52,14 @@ const opponents: Rating[] = [
 
 const matches: Match[] = [
     {
-        id: 0,
-        ladderId: 0,
         players: [player, opponents[0]],
         score: 1,
     },
     {
-        id: 1,
-        ladderId: 0,
         players: [player, opponents[1]],
         score: 0,
     },
     {
-        id: 2,
-        ladderId: 0,
         players: [player, opponents[2]],
         score: 0,
     },

@@ -33,15 +33,12 @@ export type LadderParams = {
 };
 
 export type Rating = {
-    ladderId: number;
     elo: EloRating;
     glicko: GlickoRating;
 };
 
 // players[0] is always Player One. Score is always given in relation to Player One
 export type Match = {
-    id: number;
-    ladderId: number;
     players: [Rating, Rating];
     score?: number;
 };
