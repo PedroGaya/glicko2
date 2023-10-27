@@ -1,44 +1,51 @@
-import { Ratings } from "@prisma/client";
-import { Match } from "./types";
+import { Player, Match } from "./types";
 import { Glicko2, updatePlayer } from "./glicko2";
 
-const player: Ratings = {
-    id: 0,
-    leagueId: 0,
-    userId: 0,
-    eloRating: 1000,
-    glickoRating: 1500,
-    glickoDeviation: 200,
-    glickoVolatility: 0.06,
+const player: Player = {
+    elo: {
+        rating: 1000,
+        k_value: 32,
+    },
+    glicko: {
+        rating: 1500,
+        deviation: 200,
+        volatility: 0.06,
+    },
 };
 
-const opponents: Ratings[] = [
+const opponents: Player[] = [
     {
-        id: 1,
-        leagueId: 0,
-        userId: 1,
-        eloRating: 1000,
-        glickoRating: 1400,
-        glickoDeviation: 30,
-        glickoVolatility: 0.06,
+        elo: {
+            rating: 1000,
+            k_value: 32,
+        },
+        glicko: {
+            rating: 1400,
+            deviation: 30,
+            volatility: 0.06,
+        },
     },
     {
-        id: 2,
-        leagueId: 0,
-        userId: 2,
-        eloRating: 1000,
-        glickoRating: 1550,
-        glickoDeviation: 100,
-        glickoVolatility: 0.06,
+        elo: {
+            rating: 1000,
+            k_value: 32,
+        },
+        glicko: {
+            rating: 1550,
+            deviation: 100,
+            volatility: 0.06,
+        },
     },
     {
-        id: 3,
-        leagueId: 0,
-        userId: 3,
-        eloRating: 1000,
-        glickoRating: 1700,
-        glickoDeviation: 300,
-        glickoVolatility: 0.06,
+        elo: {
+            rating: 1000,
+            k_value: 32,
+        },
+        glicko: {
+            rating: 1700,
+            deviation: 300,
+            volatility: 0.06,
+        },
     },
 ];
 
@@ -52,17 +59,14 @@ const glicko: Glicko2 = {
 
 const matches: Match[] = [
     {
-        id: 0,
         players: [player, opponents[0]],
         score: 1,
     },
     {
-        id: 1,
         players: [player, opponents[1]],
         score: 0,
     },
     {
-        id: 2,
         players: [player, opponents[2]],
         score: 0,
     },

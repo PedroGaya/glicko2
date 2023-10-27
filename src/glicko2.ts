@@ -1,5 +1,4 @@
-import { Ratings } from "@prisma/client";
-import { Match } from "./types";
+import { Player, Match } from "./types";
 
 export type Glicko2 = {
     defaultRating: number; // Default glicko2 rating
@@ -10,16 +9,16 @@ export type Glicko2 = {
 };
 
 export function updatePlayer(
-    player: Ratings,
+    player: Player,
     matches: Match[],
     params: Glicko2
 ) {
-    const r = player.glickoRating;
-    const RD = player.glickoDeviation;
+    const r = player.glicko.rating;
+    const RD = player.glicko.deviation;
 
     const mu = (r - 1500) / 173.7178;
     const phi = RD / 173.7178;
-    const vol = player.glickoVolatility;
+    const vol = player.glicko.volatility;
 
     const tau = params.tau;
 
@@ -35,8 +34,8 @@ export function updatePlayer(
                 ? match.score
                 : 1 - match.score;
 
-        let phi_j = opponent.glickoDeviation / 173.7178;
-        let mu_j = (opponent.glickoRating - 1500) / 173.7178;
+        let phi_j = opponent.glicko.deviation / 173.7178;
+        let mu_j = (opponent.glicko.rating - 1500) / 173.7178;
 
         let g = 1 / Math.sqrt(1 + (3 * phi_j * phi_j) / (Math.PI * Math.PI));
         let E = 1 / (1 + Math.exp(-g * (mu - mu_j)));
