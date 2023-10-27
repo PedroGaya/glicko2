@@ -1,30 +1,41 @@
-import { Player, Match, GlickoParams, GlickoRating } from "./types";
+import { Ratings, Match, GlickoParams, GlickoRating } from "./types";
 
 export class Glicko2 {
     defaultRating: number;
     defaultRatingDeviation: number;
     defaultVolatility: number;
-    ratingPeriod: {
-        games?: number;
-        hours?: number;
-    };
     tau: number;
 
     constructor(params: GlickoParams) {
         this.defaultRating = params.defaultRating;
         this.defaultRatingDeviation = params.defaultRatingDeviation;
         this.defaultVolatility = params.defaultVolatility;
-        this.ratingPeriod = params.ratingPeriod;
         this.tau = params.tau;
     }
 
-    public updatePlayer(player: Player, matches: Match[]): GlickoRating {
-        const r = player.glicko.rating;
-        const RD = player.glicko.deviation;
+    public getNewRating(): GlickoRating {
+        return {
+            rating: this.defaultRating,
+            deviation: this.defaultRatingDeviation,
+            volatility: this.defaultVolatility,
+        };
+    }
+
+    public updateRatings(rating: Ratings, matches: Match[]): GlickoRating {
+        const r = rating.glicko.rating;
+        const RD = rating.glicko.deviation;
 
         const mu = (r - 1500) / 173.7178;
         const phi = RD / 173.7178;
-        const vol = player.glicko.volatility;
+        const vol = rating.glicko.volatility;
+
+        if (matches.length == 0) {
+            return {
+                rating: r,
+                deviation: RD,
+                volatility: Math.sqrt(phi * phi + vol * vol),
+            };
+        }
 
         const tau = this.tau;
 
@@ -32,11 +43,11 @@ export class Glicko2 {
         let delta_acc: number = 0;
 
         matches.forEach((match, idx) => {
-            const opponent = match.players[1 - match.players.indexOf(player)];
+            const opponent = match.players[1 - match.players.indexOf(rating)];
             const score =
                 match.score == 0.5
                     ? 0.5
-                    : match.players.indexOf(player) == 0
+                    : match.players.indexOf(rating) == 0
                     ? match.score
                     : 1 - match.score;
 
@@ -117,9 +128,9 @@ export class Glicko2 {
         return { rating: new_rating, deviation: new_RD, volatility: new_vol };
     }
 
-    public getGXE(player: Player) {
-        const rating = player.glicko.rating;
-        const rd = player.glicko.deviation;
+    public getGXE(rating: Ratings): number {
+        const r = rating.glicko.rating;
+        const rd = rating.glicko.deviation;
 
         if (rd > 100) {
             throw "This player's rating is provisional (RD > 100).";
@@ -129,7 +140,7 @@ export class Glicko2 {
                     10000 /
                         (1 +
                             10 **
-                                (((1500 - rating) * Math.PI) /
+                                (((1500 - r) * Math.PI) /
                                     Math.sqrt(
                                         3 * Math.log(10) ** 2 * rd ** 2 +
                                             2500 *
