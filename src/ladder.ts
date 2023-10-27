@@ -1,6 +1,8 @@
+import { User } from "@prisma/client";
 import { Elo } from "./elo";
 import { Glicko2 } from "./glicko2";
-import { LadderParams, Match, RatingPeriod } from "./types";
+import { LadderParams, Match, Rating, RatingPeriod } from "./types";
+import { prisma } from "./client";
 
 export class Ladder {
     id: number;
@@ -10,8 +12,6 @@ export class Ladder {
     ratingPeriod: RatingPeriod;
 
     matches: Match[];
-    rpMatches: Match[];
-    ongoingMatches: Match[];
 
     constructor(params: LadderParams) {
         this.elo = new Elo(params.elo);
@@ -19,6 +19,4 @@ export class Ladder {
 
         this.ratingPeriod = params.ratingPeriod;
     }
-
-    public startMatch() {}
 }

@@ -1,82 +1,28 @@
-import { Rating, Match, GlickoParams } from "./types";
-import { Glicko2 } from "./glicko2";
-import { Elo } from "./elo";
+import { prisma } from "./client";
+import { Ladder } from "./ladder";
+import { LadderParams } from "./types";
 
-const player: Rating = {
-    elo: {
-        rating: 1000,
-        k_value: 32,
-    },
-    glicko: {
-        rating: 1500,
-        deviation: 200,
-        volatility: 0.06,
-    },
-};
+const data = await prisma.ladder.findMany();
 
-const opponents: Rating[] = [
-    {
+const ladders: Ladder[] = data.map((ladderData) => {
+    const params: LadderParams = {
+        id: ladderData.id,
+        name: ladderData.name,
         elo: {
-            rating: 1000,
-            k_value: 32,
+            defaultRating: ladderData.eloRating,
+            defaultK: 50,
         },
         glicko: {
-            rating: 1400,
-            deviation: 30,
-            volatility: 0.06,
+            defaultRating: ladderData.glickoRating,
+            defaultRatingDeviation: ladderData.glickoDeviation,
+            defaultVolatility: ladderData.glickoVolatility,
+            tau: ladderData.glickoTau,
         },
-    },
-    {
-        elo: {
-            rating: 1000,
-            k_value: 32,
+        ratingPeriod: {
+            games: 15,
+            hours: 24,
         },
-        glicko: {
-            rating: 1550,
-            deviation: 100,
-            volatility: 0.06,
-        },
-    },
-    {
-        elo: {
-            rating: 1000,
-            k_value: 32,
-        },
-        glicko: {
-            rating: 1700,
-            deviation: 300,
-            volatility: 0.06,
-        },
-    },
-];
+    };
 
-const matches: Match[] = [
-    {
-        players: [player, opponents[0]],
-        score: 1,
-    },
-    {
-        players: [player, opponents[1]],
-        score: 0,
-    },
-    {
-        players: [player, opponents[2]],
-        score: 0,
-    },
-];
-
-const params: GlickoParams = {
-    defaultRating: 1500,
-    defaultRatingDeviation: 350,
-    defaultVolatility: 0.06,
-    tau: 0.5,
-};
-
-const glicko = new Glicko2(params);
-const newGlicko = glicko.updateRating(player, matches);
-
-const elo = new Elo({ defaultRating: 1000, defaultK: 50 });
-
-const newElo = elo.updateRating(matches[0]);
-
-console.log(newElo.p1, newGlicko);
+    return new Ladder(params);
+});

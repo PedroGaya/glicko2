@@ -27,6 +27,8 @@ export type RatingPeriod = {
 };
 
 export type LadderParams = {
+    id: number;
+    name: string;
     elo: EloParams;
     glicko: GlickoParams;
     ratingPeriod: RatingPeriod;
