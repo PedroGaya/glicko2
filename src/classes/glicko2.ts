@@ -1,4 +1,4 @@
-import { Rating, Match, GlickoParams, GlickoRating } from "./types";
+import { Rating, Match, GlickoParams, GlickoRating } from "../types";
 
 export class Glicko2 {
     defaultRating: number;

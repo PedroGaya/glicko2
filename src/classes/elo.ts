@@ -1,4 +1,4 @@
-import { EloParams, EloRating, Match, Rating } from "./types";
+import { EloParams, EloRating, Match, Rating } from "../types";
 
 export class Elo {
     defaultRating: number;
