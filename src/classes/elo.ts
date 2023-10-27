@@ -1,4 +1,14 @@
-import { EloParams, EloRating, Match, Rating } from "../types";
+import { Match, Rating } from "../types";
+
+export type EloParams = {
+    defaultRating: number;
+    defaultK: number;
+};
+
+export type EloRating = {
+    rating: number;
+    k_value: number;
+};
 
 export class Elo {
     defaultRating: number;

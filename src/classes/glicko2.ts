@@ -1,4 +1,17 @@
-import { Rating, Match, GlickoParams, GlickoRating } from "../types";
+import { Rating, Match } from "../types";
+
+export type GlickoParams = {
+    defaultRating: number;
+    defaultRatingDeviation: number;
+    defaultVolatility: number;
+    tau: number;
+};
+
+export type GlickoRating = {
+    rating: number;
+    deviation: number;
+    volatility: number;
+};
 
 export class Glicko2 {
     defaultRating: number;
