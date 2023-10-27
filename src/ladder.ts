@@ -1,14 +1,13 @@
 import { Elo } from "./elo";
 import { Glicko2 } from "./glicko2";
-import { LadderParams, Match, Ratings, RatingPeriod } from "./types";
+import { LadderParams, Match, RatingPeriod } from "./types";
 
 export class Ladder {
+    id: number;
     name: string;
     elo: Elo;
     glicko: Glicko2;
     ratingPeriod: RatingPeriod;
-
-    players: Ratings[];
 
     matches: Match[];
     rpMatches: Match[];
@@ -20,4 +19,6 @@ export class Ladder {
 
         this.ratingPeriod = params.ratingPeriod;
     }
+
+    public startMatch() {}
 }

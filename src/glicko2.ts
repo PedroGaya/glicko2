@@ -1,4 +1,4 @@
-import { Ratings, Match, GlickoParams, GlickoRating } from "./types";
+import { Rating, Match, GlickoParams, GlickoRating } from "./types";
 
 export class Glicko2 {
     defaultRating: number;
@@ -21,7 +21,7 @@ export class Glicko2 {
         };
     }
 
-    public updateRatings(rating: Ratings, matches: Match[]): GlickoRating {
+    public updateRating(rating: Rating, matches: Match[]): GlickoRating {
         const r = rating.glicko.rating;
         const RD = rating.glicko.deviation;
 
@@ -128,7 +128,7 @@ export class Glicko2 {
         return { rating: new_rating, deviation: new_RD, volatility: new_vol };
     }
 
-    public getGXE(rating: Ratings): number {
+    public getGXE(rating: Rating): number {
         const r = rating.glicko.rating;
         const rd = rating.glicko.deviation;
 

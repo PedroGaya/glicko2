@@ -9,14 +9,14 @@ export class Elo {
         this.defaultK = params.defaultK;
     }
 
-    public getNewRatings(): EloRating {
+    public getNewRating(): EloRating {
         return {
             rating: this.defaultRating,
             k_value: this.defaultK,
         };
     }
 
-    public updateRatings(m: Match): { p1: EloRating; p2: EloRating } {
+    public updateRating(m: Match): { p1: EloRating; p2: EloRating } {
         const { players, score } = m;
 
         const P1 = players[0];

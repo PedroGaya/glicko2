@@ -1,7 +1,9 @@
-import { Ratings, Match, GlickoParams } from "./types";
+import { Rating, Match, GlickoParams } from "./types";
 import { Glicko2 } from "./glicko2";
+import { Elo } from "./elo";
 
-const player: Ratings = {
+const player: Rating = {
+    ladderId: 0,
     elo: {
         rating: 1000,
         k_value: 32,
@@ -13,8 +15,9 @@ const player: Ratings = {
     },
 };
 
-const opponents: Ratings[] = [
+const opponents: Rating[] = [
     {
+        ladderId: 0,
         elo: {
             rating: 1000,
             k_value: 32,
@@ -26,6 +29,7 @@ const opponents: Ratings[] = [
         },
     },
     {
+        ladderId: 0,
         elo: {
             rating: 1000,
             k_value: 32,
@@ -37,6 +41,7 @@ const opponents: Ratings[] = [
         },
     },
     {
+        ladderId: 0,
         elo: {
             rating: 1000,
             k_value: 32,
@@ -51,14 +56,20 @@ const opponents: Ratings[] = [
 
 const matches: Match[] = [
     {
+        id: 0,
+        ladderId: 0,
         players: [player, opponents[0]],
         score: 1,
     },
     {
+        id: 1,
+        ladderId: 0,
         players: [player, opponents[1]],
         score: 0,
     },
     {
+        id: 2,
+        ladderId: 0,
         players: [player, opponents[2]],
         score: 0,
     },
@@ -72,6 +83,10 @@ const params: GlickoParams = {
 };
 
 const glicko = new Glicko2(params);
-const newRatingData = glicko.updateRatings(player, []);
+const newGlicko = glicko.updateRating(player, matches);
 
-console.log(newRatingData);
+const elo = new Elo({ defaultRating: 1000, defaultK: 50 });
+
+const newElo = elo.updateRating(matches[0]);
+
+console.log(newElo.p1, newGlicko);
