@@ -13,7 +13,7 @@ datasource db {
 model User {
   id          Int       @id @default(autoincrement())
   name        String
-  ratings     Ratings[]
+  ratings     Rating[]
   asPlayerOne Match[]   @relation(name: "playerOne")
   asPlayerTwo Match[]   @relation(name: "playerTwo")
 }
@@ -21,10 +21,10 @@ model User {
 model Game {
   id      Int      @id @default(autoincrement())
   name    String
-  leagues League[]
+  ladders Ladder[]
 }
 
-model League {
+model Ladder {
   id               Int       @id @default(autoincrement())
   name             String    @unique
   game             Game      @relation(fields: [gameId], references: [id])
@@ -34,18 +34,18 @@ model League {
   glickoDeviation  Float
   glickoTau        Float
   glickoVolatility Float
-  glickoRP         Int
-  ratings          Ratings[]
+  ratings          Rating[]
   matches          Match[]
 }
 
-model Ratings {
+model Rating {
   id               Int    @id @default(autoincrement())
   user             User   @relation(fields: [userId], references: [id])
   userId           Int
-  league           League @relation(fields: [leagueId], references: [id])
-  leagueId         Int
+  ladder           Ladder @relation(fields: [ladderId], references: [id])
+  ladderId         Int
   eloRating        Float
+  eloK             Int
   glickoRating     Float
   glickoDeviation  Float
   glickoVolatility Float
@@ -53,8 +53,8 @@ model Ratings {
 
 model Match {
   id          Int    @id @default(autoincrement())
-  league      League @relation(fields: [leagueId], references: [id])
-  leagueId    Int
+  ladder      Ladder @relation(fields: [ladderId], references: [id])
+  ladderId    Int
   playerOne   User   @relation("playerOne", fields: [playerOneId], references: [id])
   playerOneId Int
   playerTwo   User   @relation("playerTwo", fields: [playerTwoId], references: [id])
