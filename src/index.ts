@@ -1,5 +1,5 @@
-import { Player, Match } from "./types";
-import { Glicko2, getGXE, updatePlayer } from "./glicko2";
+import { Player, Match, GlickoParams } from "./types";
+import { Glicko2 } from "./glicko2";
 
 const player: Player = {
     elo: {
@@ -49,17 +49,6 @@ const opponents: Player[] = [
     },
 ];
 
-const glicko: Glicko2 = {
-    defaultRating: 1500,
-    defaultRatingDeviation: 350,
-    defaultVolatility: 0.06,
-    ratingPeriod: {
-        games: 15,
-        hours: 24,
-    },
-    tau: 0.5,
-};
-
 const matches: Match[] = [
     {
         players: [player, opponents[0]],
@@ -75,6 +64,18 @@ const matches: Match[] = [
     },
 ];
 
-const updated = updatePlayer(player, matches, glicko);
-console.log(updated);
-console.log("gxe ", getGXE(player));
+const params: GlickoParams = {
+    defaultRating: 1500,
+    defaultRatingDeviation: 350,
+    defaultVolatility: 0.06,
+    ratingPeriod: {
+        games: 15,
+        hours: 24,
+    },
+    tau: 0.5,
+};
+
+const glicko = new Glicko2(params);
+const newRatingData = glicko.updatePlayer(player, matches);
+
+console.log(newRatingData);
