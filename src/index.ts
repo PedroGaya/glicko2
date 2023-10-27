@@ -1,5 +1,5 @@
 import { Player, Match } from "./types";
-import { Glicko2, updatePlayer } from "./glicko2";
+import { Glicko2, getGXE, updatePlayer } from "./glicko2";
 
 const player: Player = {
     elo: {
@@ -53,7 +53,10 @@ const glicko: Glicko2 = {
     defaultRating: 1500,
     defaultRatingDeviation: 350,
     defaultVolatility: 0.06,
-    ratingPeriod: 15,
+    ratingPeriod: {
+        games: 15,
+        hours: 24,
+    },
     tau: 0.5,
 };
 
@@ -74,3 +77,4 @@ const matches: Match[] = [
 
 const updated = updatePlayer(player, matches, glicko);
 console.log(updated);
+console.log("gxe ", getGXE(player));

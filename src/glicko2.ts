@@ -4,7 +4,10 @@ export type Glicko2 = {
     defaultRating: number; // Default glicko2 rating
     defaultRatingDeviation: number; // Default deviation
     defaultVolatility: number; // Default volatility
-    ratingPeriod: number; // Rating Period, in number of games.
+    ratingPeriod: {
+        games?: number;
+        hours?: number;
+    }; // Rating Period, in number of games or amount of time.
     tau: number; // System constant tau
 };
 
@@ -111,9 +114,12 @@ export function updatePlayer(
 }
 
 // Glicko X-Act Estimate, or the odds of any given player beating a 1500~350 rated player.
-function getGXE(rating: number, rd: number) {
+export function getGXE(player: Player) {
+    const rating = player.glicko.rating;
+    const rd = player.glicko.deviation;
+
     if (rd > 100) {
-        return 0;
+        throw "This player's rating is provisional (RD > 100).";
     } else {
         return (
             Math.round(
