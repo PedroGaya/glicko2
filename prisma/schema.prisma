@@ -59,4 +59,5 @@ model Match {
   playerOneId Int
   playerTwo   User   @relation("playerTwo", fields: [playerTwoId], references: [id])
   playerTwoId Int
+  score       Int
 }
