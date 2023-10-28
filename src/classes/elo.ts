@@ -7,6 +7,7 @@ export type EloParams = {
 
 export type EloRating = {
     rating: number;
+    k_value: number;
 };
 
 export class Elo {
@@ -21,6 +22,7 @@ export class Elo {
     public getNewRating(): EloRating {
         return {
             rating: this.defaultRating,
+            k_value: this.defaultK,
         };
     }
 
@@ -53,6 +55,7 @@ export class Elo {
                         new_p1r < this.defaultRating
                             ? this.defaultRating
                             : new_p1r,
+                    k_value: p1k,
                 },
             },
             {
@@ -62,6 +65,7 @@ export class Elo {
                         new_p2r < this.defaultRating
                             ? this.defaultRating
                             : new_p2r,
+                    k_value: p2k,
                 },
             },
         ];
