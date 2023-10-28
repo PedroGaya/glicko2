@@ -4,7 +4,7 @@ import { User } from "./classes/user";
 
 export type RatingPeriod = {
     games: number;
-    hours: number;
+    hours?: number;
 };
 
 export type Rating = {
