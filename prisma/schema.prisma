@@ -42,7 +42,6 @@ model Ladder {
 }
 
 model Rating {
-  id               String @id @default(uuid())
   user             User   @relation(fields: [userId], references: [id])
   userId           String
   ladder           Ladder @relation(fields: [ladderId], references: [id])
@@ -52,6 +51,8 @@ model Rating {
   glickoRating     Float
   glickoDeviation  Float
   glickoVolatility Float
+
+  @@id([userId, ladderId])
 }
 
 model Match {
@@ -62,8 +63,7 @@ model Match {
   playerOneId String
   playerTwo   User      @relation("playerTwo", fields: [playerTwoId], references: [id])
   playerTwoId String
-  finished    Boolean
   start       DateTime
-  end         DateTime?
-  score       Int?
+  end         DateTime
+  score       Int
 }
