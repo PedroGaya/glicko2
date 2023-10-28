@@ -20,7 +20,7 @@ model User {
 
 model Game {
   id      String   @id @default(uuid())
-  name    String
+  name    String   @unique
   ladders Ladder[]
 }
 
@@ -35,7 +35,7 @@ model Ladder {
   glickoDeviation   Float
   glickoTau         Float
   glickoVolatility  Float
-  ratingPeriodGame  Int
+  ratingPeriodGames  Int
   ratingPeriodHours Int
   ratings           Rating[]
   matches           Match[]

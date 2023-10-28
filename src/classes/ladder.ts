@@ -5,6 +5,7 @@ import { User } from "./user";
 
 export type LadderParams = {
     name: string;
+    game: string;
     ratingPeriod: RatingPeriod;
     elo: EloParams;
     glicko: GlickoParams;

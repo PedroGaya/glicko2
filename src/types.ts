@@ -3,8 +3,8 @@ import { GlickoRating } from "./classes/glicko2";
 import { User } from "./classes/user";
 
 export type RatingPeriod = {
-    games?: number;
-    hours?: number;
+    games: number;
+    hours: number;
 };
 
 export type Rating = {
