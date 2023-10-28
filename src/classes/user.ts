@@ -24,15 +24,15 @@ export class User {
         return this.ratings.find((r) => r.ladderId == ladderId).rating;
     }
 
-    public updateRatings(ladderId: string, rating: Rating) {
+    public updateRatings(ladderId: string, newRating: Rating) {
         const idx = this.ratings.findIndex(
             (rating) => rating.ladderId == ladderId
         );
 
         if (idx == -1) {
-            this.ratings.push({ ladderId, rating });
+            this.ratings.push({ ladderId, rating: newRating });
         } else {
-            this.ratings[idx].rating = rating;
+            this.ratings[idx].rating = newRating;
         }
     }
 
