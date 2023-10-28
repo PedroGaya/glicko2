@@ -1,4 +1,5 @@
 import { Rating, Match } from "../types";
+import { User } from "./user";
 
 export type GlickoParams = {
     defaultRating: number;
@@ -34,13 +35,19 @@ export class Glicko2 {
         };
     }
 
-    public updateRating(rating: Rating, matches: Match[]): GlickoRating {
-        const r = rating.glicko.rating;
-        const RD = rating.glicko.deviation;
+    public updateRating(
+        user: User,
+        matches: Match[],
+        ladderId: string
+    ): GlickoRating {
+        const userRating = user.getRating(ladderId);
+
+        const r = userRating.glicko.rating;
+        const RD = userRating.glicko.deviation;
 
         const mu = (r - 1500) / 173.7178;
         const phi = RD / 173.7178;
-        const vol = rating.glicko.volatility;
+        const vol = userRating.glicko.volatility;
 
         if (matches.length == 0) {
             return {
@@ -56,16 +63,18 @@ export class Glicko2 {
         let delta_acc: number = 0;
 
         matches.forEach((match, idx) => {
-            const opponent = match.players[1 - match.players.indexOf(rating)];
+            const opponent = match.players[1 - match.players.indexOf(user)];
+            const opponentRating = opponent.getRating(ladderId);
+
             const score =
                 match.score == 0.5
                     ? 0.5
-                    : match.players.indexOf(rating) == 0
+                    : match.players.indexOf(user) == 0
                     ? match.score
                     : 1 - match.score;
 
-            let phi_j = opponent.glicko.deviation / 173.7178;
-            let mu_j = (opponent.glicko.rating - 1500) / 173.7178;
+            let phi_j = opponentRating.glicko.deviation / 173.7178;
+            let mu_j = (opponentRating.glicko.rating - 1500) / 173.7178;
 
             let g =
                 1 / Math.sqrt(1 + (3 * phi_j * phi_j) / (Math.PI * Math.PI));

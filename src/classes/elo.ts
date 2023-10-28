@@ -26,37 +26,37 @@ export class Elo {
         };
     }
 
-    public updateRating(m: Match): { p1: Rating; p2: Rating } {
-        const { players, score } = m;
+    public updateRating(m: Match): Rating[] {
+        const { ladderId, players, score } = m;
 
-        const p1 = players[0];
-        const p2 = players[1];
+        const p1r = players[0].getRating(ladderId);
+        const p2r = players[1].getRating(ladderId);
 
         const p1s = score; // Actual score for p1
         const p2s = 1 - score; // Actual score for p2
 
-        const q1 = 10 ** (p1.elo.rating / 480);
-        const q2 = 10 ** (p2.elo.rating / 480);
+        const q1 = 10 ** (p1r.elo.rating / 480);
+        const q2 = 10 ** (p2r.elo.rating / 480);
 
         const p1e = q1 / (q1 + q2); // Expected score for p1
         const p2e = q2 / (q2 + q1); // Expected score for p2
 
-        const p1k = this.getK(p1.elo.rating, p1s);
-        const p2k = this.getK(p2.elo.rating, p2s);
+        const p1k = this.getK(p1r.elo.rating, p1s);
+        const p2k = this.getK(p2r.elo.rating, p2s);
 
-        const new_p1r = p1.elo.rating + p1k * (p1s - p1e);
-        const new_p2r = p2.elo.rating + p2k * (p2s - p2e);
+        const new_p1r = p1r.elo.rating + p1k * (p1s - p1e);
+        const new_p2r = p2r.elo.rating + p2k * (p2s - p2e);
 
-        return {
-            p1: {
-                glicko: { ...p1.glicko },
+        return [
+            {
+                glicko: { ...p1r.glicko },
                 elo: { rating: new_p1r, k_value: p1k },
             },
-            p2: {
-                glicko: { ...p2.glicko },
+            {
+                glicko: { ...p2r.glicko },
                 elo: { rating: new_p2r, k_value: p2k },
             },
-        };
+        ];
     }
 
     private getK(rating: number, score: number): number {

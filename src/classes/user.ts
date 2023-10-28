@@ -1,4 +1,4 @@
-import { Rating } from "../types";
+import { Match, Rating } from "../types";
 
 export type UserParams = {
     name: string;
@@ -9,11 +9,19 @@ export class User {
     name: string;
     ratings: { ladderId: string; rating: Rating }[];
 
+    matches: Match[];
+    matchesRatingPeriod: Match[];
+
     constructor(params: UserParams) {
         this.name = params.name;
         this.ratings = [];
+        this.matchesRatingPeriod = [];
 
         this.id = crypto.randomUUID();
+    }
+
+    public getRating(ladderId: string) {
+        return this.ratings.find((r) => r.ladderId == ladderId).rating;
     }
 
     public updateRatings(ladderId: string, rating: Rating) {
@@ -26,5 +34,9 @@ export class User {
         } else {
             this.ratings[idx].rating = rating;
         }
+    }
+
+    public addMatch(match: Match) {
+        this.matchesRatingPeriod.push(match);
     }
 }
