@@ -39,7 +39,7 @@ export class Glicko2 {
         user: User,
         matches: Match[],
         ladderId: string
-    ): GlickoRating {
+    ): Rating {
         const userRating = user.getRating(ladderId);
 
         const r = userRating.glicko.rating;
@@ -50,10 +50,15 @@ export class Glicko2 {
         const vol = userRating.glicko.volatility;
 
         if (matches.length == 0) {
-            return {
+            const newGlickoRating: GlickoRating = {
                 rating: r,
                 deviation: RD,
                 volatility: Math.sqrt(phi * phi + vol * vol),
+            };
+
+            return {
+                ...user.getRating(ladderId),
+                glicko: newGlickoRating,
             };
         }
 
@@ -147,7 +152,16 @@ export class Glicko2 {
         const new_rating = 173.7178 * new_mu + 1500;
         const new_RD = 173.7178 * new_phi;
 
-        return { rating: new_rating, deviation: new_RD, volatility: new_vol };
+        const newGlickoRating = {
+            rating: new_rating,
+            deviation: new_RD,
+            volatility: new_vol,
+        };
+
+        return {
+            ...user.getRating(ladderId),
+            glicko: newGlickoRating,
+        };
     }
 
     public getGXE(rating: Rating): number {

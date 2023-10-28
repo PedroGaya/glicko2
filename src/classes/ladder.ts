@@ -44,4 +44,25 @@ export class Ladder {
 
         return user.ratings.find((r) => r.ladderId == this.id);
     }
+
+    private updateElo(match: Match) {
+        const player1 = match.players[0];
+        const player2 = match.players[1];
+
+        const newRatings = this.elo.updateRating(match);
+
+        player1.updateRatings(this.id, newRatings[0]);
+        player2.updateRatings(this.id, newRatings[1]);
+    }
+
+    private updateGlicko(player: User) {
+        const newRating = this.glicko.updateRating(
+            player,
+            player.findMatches(this.id, true),
+            this.id
+        );
+
+        player.updateRatings(this.id, newRating);
+        player.deleteMatches(this.id, true);
+    }
 }
