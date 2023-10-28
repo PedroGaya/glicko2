@@ -11,39 +11,42 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
+  id          String   @id @default(uuid())
   name        String
   ratings     Rating[]
-  asPlayerOne Match[]   @relation(name: "playerOne")
-  asPlayerTwo Match[]   @relation(name: "playerTwo")
+  asPlayerOne Match[]  @relation(name: "playerOne")
+  asPlayerTwo Match[]  @relation(name: "playerTwo")
 }
 
 model Game {
-  id      Int      @id @default(autoincrement())
+  id      String   @id @default(uuid())
   name    String
   ladders Ladder[]
 }
 
 model Ladder {
-  id               Int       @id @default(autoincrement())
-  name             String    @unique
-  game             Game      @relation(fields: [gameId], references: [id])
-  gameId           Int
-  eloRating        Float
-  glickoRating     Float
-  glickoDeviation  Float
-  glickoTau        Float
-  glickoVolatility Float
-  ratings          Rating[]
-  matches          Match[]
+  id                String   @id @default(uuid())
+  name              String   @unique
+  game              Game     @relation(fields: [gameId], references: [id])
+  gameId            String
+  eloRating         Float
+  eloK              Float
+  glickoRating      Float
+  glickoDeviation   Float
+  glickoTau         Float
+  glickoVolatility  Float
+  ratingPeriodGame  Int
+  ratingPeriodHours Int
+  ratings           Rating[]
+  matches           Match[]
 }
 
 model Rating {
-  id               Int    @id @default(autoincrement())
+  id               String @id @default(uuid())
   user             User   @relation(fields: [userId], references: [id])
-  userId           Int
+  userId           String
   ladder           Ladder @relation(fields: [ladderId], references: [id])
-  ladderId         Int
+  ladderId         String
   eloRating        Float
   eloK             Int
   glickoRating     Float
@@ -52,12 +55,15 @@ model Rating {
 }
 
 model Match {
-  id          Int    @id @default(autoincrement())
-  ladder      Ladder @relation(fields: [ladderId], references: [id])
-  ladderId    Int
-  playerOne   User   @relation("playerOne", fields: [playerOneId], references: [id])
-  playerOneId Int
-  playerTwo   User   @relation("playerTwo", fields: [playerTwoId], references: [id])
-  playerTwoId Int
+  id          String    @id @default(uuid())
+  ladder      Ladder    @relation(fields: [ladderId], references: [id])
+  ladderId    String
+  playerOne   User      @relation("playerOne", fields: [playerOneId], references: [id])
+  playerOneId String
+  playerTwo   User      @relation("playerTwo", fields: [playerTwoId], references: [id])
+  playerTwoId String
+  finished    Boolean
+  start       DateTime
+  end         DateTime?
   score       Int?
 }
