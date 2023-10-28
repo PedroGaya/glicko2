@@ -37,6 +37,27 @@ export class User {
     }
 
     public addMatch(match: Match) {
+        this.matches.push(match);
         this.matchesRatingPeriod.push(match);
+    }
+
+    public findMatches(ladderId: string, ratingPeriod: boolean) {
+        if (ratingPeriod) {
+            return this.matchesRatingPeriod.filter(
+                (m) => m.ladderId == ladderId
+            );
+        } else {
+            return this.matches.filter((m) => m.ladderId == ladderId);
+        }
+    }
+
+    public deleteMatches(ladderId: string, ratingPeriod: boolean) {
+        if (ratingPeriod) {
+            this.matchesRatingPeriod = this.matchesRatingPeriod.filter(
+                (m) => m.ladderId != ladderId
+            );
+        } else {
+            this.matches = this.matches.filter((m) => m.ladderId != ladderId);
+        }
     }
 }
