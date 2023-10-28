@@ -14,10 +14,11 @@ export type Rating = {
 
 // players[0] is always Player One. Score is always given in relation to Player One
 export type Match = {
+    id: string;
     ladderId: string;
     players: [User, User];
     start: Date;
-    end: Date;
+    end?: Date;
     finished: boolean;
     score: number | null;
 };

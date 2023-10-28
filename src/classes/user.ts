@@ -2,6 +2,7 @@ import { Match, Rating } from "../types";
 
 export type UserParams = {
     name: string;
+    ratings: { ladderId: string; rating: Rating }[];
 };
 
 export class User {
@@ -14,7 +15,9 @@ export class User {
 
     constructor(params: UserParams) {
         this.name = params.name;
-        this.ratings = [];
+        this.ratings = params.ratings;
+
+        this.matches = [];
         this.matchesRatingPeriod = [];
 
         this.id = crypto.randomUUID();

@@ -7,7 +7,6 @@ export type EloParams = {
 
 export type EloRating = {
     rating: number;
-    k_value: number;
 };
 
 export class Elo {
@@ -22,7 +21,6 @@ export class Elo {
     public getNewRating(): EloRating {
         return {
             rating: this.defaultRating,
-            k_value: this.defaultK,
         };
     }
 
@@ -50,29 +48,41 @@ export class Elo {
         return [
             {
                 glicko: { ...p1r.glicko },
-                elo: { rating: new_p1r, k_value: p1k },
+                elo: {
+                    rating:
+                        new_p1r < this.defaultRating
+                            ? this.defaultRating
+                            : new_p1r,
+                },
             },
             {
                 glicko: { ...p2r.glicko },
-                elo: { rating: new_p2r, k_value: p2k },
+                elo: {
+                    rating:
+                        new_p2r < this.defaultRating
+                            ? this.defaultRating
+                            : new_p2r,
+                },
             },
         ];
     }
 
     private getK(rating: number, score: number): number {
-        if (rating >= 1600) return 32;
-        if (rating >= 1300 && rating <= 1599) return 40;
         if (rating >= 1100 && rating <= 1299) return 50;
+        if (rating >= 1300 && rating <= 1599) return 40;
+        if (rating >= 1600) return 32;
 
         if (rating == 1000) {
             if (score === 1) return 80;
             else return 20;
-        }
-
-        if (score == 1) {
-            return Math.round(rating * -0.30612244898 + 386.428571429);
+        } else if (rating > 1000 && rating < 1100) {
+            if (score == 1) {
+                return Math.round(rating * -0.30612244898 + 386.428571429);
+            } else {
+                return Math.round(rating * 0.30612244898 - 286.428571429);
+            }
         } else {
-            return Math.round(rating * 0.30612244898 + 286.428571429);
+            return this.defaultK;
         }
     }
 }
