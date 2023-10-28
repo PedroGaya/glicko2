@@ -1,16 +1,19 @@
 {
-  "name": "glicko2",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "@prisma/client": "^5.4.2",
-    "prisma": "^5.4.2",
-    "sqlite3": "^5.1.6"
-  }
+    "name": "glicko2",
+    "module": "index.ts",
+    "type": "module",
+    "scripts": {
+        "dev": "bun ./src/index.ts"
+    },
+    "devDependencies": {
+        "bun-types": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@prisma/client": "^5.4.2",
+        "prisma": "^5.4.2",
+        "sqlite3": "^5.1.6"
+    }
 }
