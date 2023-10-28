@@ -16,5 +16,8 @@ export type Rating = {
 export type Match = {
     ladderId: string;
     players: [User, User];
-    score?: number;
+    start: Date;
+    end: Date;
+    finished: boolean;
+    score: number | null;
 };
