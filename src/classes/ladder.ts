@@ -27,6 +27,8 @@ export class Ladder {
     players: User[];
 
     constructor(params: LadderParams) {
+        this.id = params.id;
+
         this.name = params.name;
         this.elo = new Elo(params.elo);
         this.glicko = new Glicko2(params.glicko);
@@ -39,8 +41,6 @@ export class Ladder {
         for (const user of params.players) {
             this.registerPlayer(user);
         }
-
-        this.id = params.id;
     }
 
     public isRated(user: User): boolean {

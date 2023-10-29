@@ -29,7 +29,7 @@ const ladder = new Ladder({
         hours: 24,
     },
     matches: [],
-    players: [],
+    players: [gaya, carlos],
 });
 
 const matches = [];
@@ -45,9 +45,13 @@ match = ladder.startMatch(carlos, zoro);
 matches.push(ladder.endMatch(match.id, 0));
 
 ladder.updateGlicko(gaya, matches);
-ladder.updateGlicko(carlos, matches);
 ladder.updateGlicko(zoro, matches);
 ladder.updateGlicko(natan, matches);
+ladder.updateGlicko(carlos, matches);
 
 console.log(ladder.players);
+
 console.log(gaya.ratings);
+console.log(carlos.ratings);
+console.log(zoro.ratings);
+console.log(natan.ratings);
