@@ -1,11 +1,11 @@
 import { LadderParams } from "../classes/ladder";
 import { prisma } from "../client";
 
-const getLadders = async () => {
+export const getLadders = async () => {
     return await prisma.ladder.findMany();
 };
 
-const createLadder = async (params: LadderParams) => {
+export const createLadder = async (params: LadderParams) => {
     return await prisma.ladder.create({
         data: {
             name: params.name,

@@ -1,7 +1,7 @@
 import { prisma } from "../client";
 import { Rating } from "../types";
 
-const getLadderRatings = async (ladderId: string) => {
+export const getLadderRatings = async (ladderId: string) => {
     return await prisma.rating.findMany({
         where: {
             ladderId: ladderId,
@@ -9,7 +9,7 @@ const getLadderRatings = async (ladderId: string) => {
     });
 };
 
-const getUserRatings = async (userId: string) => {
+export const getUserRatings = async (userId: string) => {
     return await prisma.rating.findMany({
         where: {
             userId: userId,
@@ -17,7 +17,7 @@ const getUserRatings = async (userId: string) => {
     });
 };
 
-const updateRating = async (
+export const updateRating = async (
     userId: string,
     ladderId: string,
     { elo, glicko }: Rating
