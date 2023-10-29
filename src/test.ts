@@ -1,12 +1,17 @@
 import { Ladder } from "./classes/ladder";
 import { User } from "./classes/user";
 
-const gaya = new User({ name: "gaya", ratings: [] });
-const carlos = new User({ name: "carlos", ratings: [] });
-const zoro = new User({ name: "carlos", ratings: [] });
-const natan = new User({ name: "carlos", ratings: [] });
+const gaya = new User({ id: crypto.randomUUID(), name: "gaya", ratings: [] });
+const carlos = new User({
+    id: crypto.randomUUID(),
+    name: "carlos",
+    ratings: [],
+});
+const zoro = new User({ id: crypto.randomUUID(), name: "zoro", ratings: [] });
+const natan = new User({ id: crypto.randomUUID(), name: "natan", ratings: [] });
 
 const ladder = new Ladder({
+    id: crypto.randomUUID(),
     game: "OPTCG",
     name: "OPTCG-Fortaleza",
     elo: {
@@ -23,6 +28,8 @@ const ladder = new Ladder({
         games: 3,
         hours: 24,
     },
+    matches: [],
+    players: [],
 });
 
 const matches = [];
@@ -37,14 +44,10 @@ matches.push(ladder.endMatch(match.id, 0));
 match = ladder.startMatch(carlos, zoro);
 matches.push(ladder.endMatch(match.id, 0));
 
-console.log(ladder.matches);
-
 ladder.updateGlicko(gaya, matches);
 ladder.updateGlicko(carlos, matches);
 ladder.updateGlicko(zoro, matches);
 ladder.updateGlicko(natan, matches);
 
-console.log(gaya.getRating(ladder.id));
-console.log(carlos.getRating(ladder.id));
-console.log(zoro.getRating(ladder.id));
-console.log(natan.getRating(ladder.id));
+console.log(ladder.players);
+console.log(gaya.ratings);

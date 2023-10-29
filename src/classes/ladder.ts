@@ -35,24 +35,30 @@ export class Ladder {
         this.matches = params.matches;
         this.matchesOngoing = [];
 
-        this.players = params.players;
+        this.players = [];
+        for (const user of params.players) {
+            this.registerPlayer(user);
+        }
 
         this.id = params.id;
     }
 
-    public isRegistered(user: User): boolean {
-        return this.players.includes(user);
+    public isRated(user: User): boolean {
+        return user.ratings
+            .map((rating) => {
+                return rating.ladderId;
+            })
+            .includes(this.id);
     }
 
     public registerPlayer(user: User) {
-        if (!this.isRegistered(user)) {
+        if (!this.isRated(user)) {
             user.updateRatings(this.id, {
                 elo: this.elo.getNewRating(),
                 glicko: this.glicko.getNewRating(),
             });
-            this.players.push(user);
         }
-
+        this.players.push(user);
         return user.ratings.find((r) => r.ladderId == this.id);
     }
 
@@ -76,8 +82,8 @@ export class Ladder {
     }
 
     public startMatch(player1: User, player2: User) {
-        if (!this.isRegistered(player1)) this.registerPlayer(player1);
-        if (!this.isRegistered(player2)) this.registerPlayer(player2);
+        if (!this.isRated(player1)) this.registerPlayer(player1);
+        if (!this.isRated(player2)) this.registerPlayer(player2);
 
         const match: Match = {
             id: crypto.randomUUID(),
