@@ -3,6 +3,8 @@ import { User } from "./classes/user";
 
 const gaya = new User({ name: "gaya", ratings: [] });
 const carlos = new User({ name: "carlos", ratings: [] });
+const zoro = new User({ name: "carlos", ratings: [] });
+const natan = new User({ name: "carlos", ratings: [] });
 
 const ladder = new Ladder({
     game: "OPTCG",
@@ -24,24 +26,25 @@ const ladder = new Ladder({
 });
 
 const matches = [];
+let match;
 
-let match = ladder.startMatch(gaya, carlos);
-matches.push(ladder.endMatch(match.id, 1));
-
-match = ladder.startMatch(gaya, carlos);
+match = ladder.startMatch(gaya, zoro);
 matches.push(ladder.endMatch(match.id, 0));
 
-match = ladder.startMatch(gaya, carlos);
+match = ladder.startMatch(natan, carlos);
 matches.push(ladder.endMatch(match.id, 0));
 
-match = ladder.startMatch(gaya, carlos);
-matches.push(ladder.endMatch(match.id, 1));
-
-match = ladder.startMatch(gaya, carlos);
+match = ladder.startMatch(carlos, zoro);
 matches.push(ladder.endMatch(match.id, 0));
 
-ladder.updateGlicko(carlos, matches);
+console.log(ladder.matches);
+
 ladder.updateGlicko(gaya, matches);
+ladder.updateGlicko(carlos, matches);
+ladder.updateGlicko(zoro, matches);
+ladder.updateGlicko(natan, matches);
 
-console.log("Gaya: ", gaya.getRating(ladder.id));
-console.log("Carlos: ", carlos.getRating(ladder.id));
+console.log(gaya.getRating(ladder.id));
+console.log(carlos.getRating(ladder.id));
+console.log(zoro.getRating(ladder.id));
+console.log(natan.getRating(ladder.id));
