@@ -1,7 +1,9 @@
+import { getUserRatings } from "../crud/rating";
+import { createUser } from "../crud/user";
 import { Match, Rating } from "../types";
 
 export type UserParams = {
-    id: string;
+    id?: string;
     name: string;
     ratings: { ladderId: string; rating: Rating }[];
 };
@@ -16,6 +18,32 @@ export class User {
 
         this.name = params.name;
         this.ratings = params.ratings;
+    }
+
+    static async build(params: UserParams) {
+        const user = await createUser(params.name);
+        const ratings = await getUserRatings(user.id);
+
+        return new User({
+            id: params.id ?? user.id,
+            name: user.name,
+            ratings: ratings.map((r) => {
+                return {
+                    ladderId: r.ladderId,
+                    rating: {
+                        elo: {
+                            rating: r.eloRating,
+                            k_value: r.eloK,
+                        },
+                        glicko: {
+                            rating: r.glickoRating,
+                            deviation: r.glickoDeviation,
+                            volatility: r.glickoVolatility,
+                        },
+                    },
+                };
+            }),
+        });
     }
 
     public getRating(ladderId: string) {
