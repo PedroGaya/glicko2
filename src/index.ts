@@ -5,7 +5,8 @@ const gaya = new User({ name: "gaya", ratings: [] });
 const carlos = new User({ name: "carlos", ratings: [] });
 
 const ladder = new Ladder({
-    name: "OPTCG",
+    game: "OPTCG",
+    name: "OPTCG-Fortaleza",
     elo: {
         defaultRating: 1000,
         defaultK: 50,
@@ -22,20 +23,25 @@ const ladder = new Ladder({
     },
 });
 
+const matches = [];
+
 let match = ladder.startMatch(gaya, carlos);
-ladder.endMatch(match.id, 1);
+matches.push(ladder.endMatch(match.id, 1));
 
 match = ladder.startMatch(gaya, carlos);
-ladder.endMatch(match.id, 0);
+matches.push(ladder.endMatch(match.id, 0));
 
 match = ladder.startMatch(gaya, carlos);
-ladder.endMatch(match.id, 0);
+matches.push(ladder.endMatch(match.id, 0));
 
 match = ladder.startMatch(gaya, carlos);
-ladder.endMatch(match.id, 1);
+matches.push(ladder.endMatch(match.id, 1));
 
 match = ladder.startMatch(gaya, carlos);
-ladder.endMatch(match.id, 0);
+matches.push(ladder.endMatch(match.id, 0));
+
+ladder.updateGlicko(carlos, matches);
+ladder.updateGlicko(gaya, matches);
 
 console.log("Gaya: ", gaya.getRating(ladder.id));
 console.log("Carlos: ", carlos.getRating(ladder.id));

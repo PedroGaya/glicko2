@@ -63,15 +63,9 @@ export class Ladder {
         player2.updateRatings(this.id, newRatings[1]);
     }
 
-    private updateGlicko(player: User) {
-        const newRating = this.glicko.updateRating(
-            player,
-            player.findMatches(this.id, true),
-            this.id
-        );
-
+    public updateGlicko(player: User, matches: Match[]) {
+        const newRating = this.glicko.updateRating(player, matches, this.id);
         player.updateRatings(this.id, newRating);
-        player.deleteMatches(this.id, true);
     }
 
     public startMatch(player1: User, player2: User) {
@@ -104,38 +98,12 @@ export class Ladder {
 
         this.matches.push(finishedMatch);
 
-        const p1 = match.players[0];
-        const p2 = match.players[1];
-
-        p1.addMatch(finishedMatch);
-        p2.addMatch(finishedMatch);
-
         this.updateElo(finishedMatch);
-
-        if (
-            p1.findMatches(match.ladderId, true).length >=
-            this.ratingPeriod.games
-        ) {
-            this.updateGlicko(p1);
-        }
-
-        if (
-            p2.findMatches(match.ladderId, true).length >=
-            this.ratingPeriod.games
-        ) {
-            this.updateGlicko(p2);
-        }
 
         this.matchesOngoing = this.matchesOngoing.filter(
             (match) => match.id != matchId
         );
 
         return finishedMatch;
-    }
-
-    public endRatingPeriod() {
-        for (const player of this.players) {
-            this.updateGlicko(player);
-        }
     }
 }
