@@ -177,3 +177,7 @@ dist
 # Database
 prisma/dev.db
 prisma/dev.db-journal
+
+# Temporary Tests
+./src/load.ts
+./src/test.ts
