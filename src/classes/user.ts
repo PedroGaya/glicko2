@@ -12,10 +12,10 @@ export class User {
     ratings: { ladderId: string; rating: Rating }[];
 
     constructor(params: UserParams) {
+        this.id = params.id;
+
         this.name = params.name;
         this.ratings = params.ratings;
-
-        this.id = params.id;
     }
 
     public getRating(ladderId: string) {
