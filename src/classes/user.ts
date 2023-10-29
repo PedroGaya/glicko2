@@ -1,4 +1,4 @@
-import { getUserRatings } from "../crud/rating";
+import { getUserRatings, updateRating } from "../crud/rating";
 import { createUser } from "../crud/user";
 import { Match, Rating } from "../types";
 
@@ -50,7 +50,7 @@ export class User {
         return this.ratings.find((r) => r.ladderId == ladderId).rating;
     }
 
-    public updateRatings(ladderId: string, newRating: Rating) {
+    public async updateRatings(ladderId: string, newRating: Rating) {
         const idx = this.ratings.findIndex(
             (rating) => rating.ladderId == ladderId
         );
@@ -60,5 +60,9 @@ export class User {
         } else {
             this.ratings[idx].rating = newRating;
         }
+
+        const rating = await updateRating(this.id, ladderId, newRating);
+
+        return rating;
     }
 }
