@@ -1,6 +1,7 @@
 import { Match, Rating } from "../types";
 
 export type UserParams = {
+    id: string;
     name: string;
     ratings: { ladderId: string; rating: Rating }[];
 };
@@ -14,7 +15,7 @@ export class User {
         this.name = params.name;
         this.ratings = params.ratings;
 
-        this.id = crypto.randomUUID();
+        this.id = params.id;
     }
 
     public getRating(ladderId: string) {

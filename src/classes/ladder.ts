@@ -4,11 +4,14 @@ import { Glicko2, GlickoParams } from "./glicko2";
 import { User } from "./user";
 
 export type LadderParams = {
+    id: string;
     name: string;
     game: string;
     ratingPeriod: RatingPeriod;
     elo: EloParams;
     glicko: GlickoParams;
+    matches: Match[];
+    players: User[];
 };
 
 export class Ladder {
@@ -29,12 +32,12 @@ export class Ladder {
         this.glicko = new Glicko2(params.glicko);
         this.ratingPeriod = params.ratingPeriod;
 
-        this.matches = [];
+        this.matches = params.matches;
         this.matchesOngoing = [];
 
-        this.players = [];
+        this.players = params.players;
 
-        this.id = crypto.randomUUID();
+        this.id = params.id;
     }
 
     public isRegistered(user: User): boolean {
