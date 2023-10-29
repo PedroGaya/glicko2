@@ -25,7 +25,7 @@ export const getUserMatches = async (userId: string, ladderId: string) => {
 export const getLadderMatches = async (ladderId: string) => {
     const matches = await prisma.match.findMany({
         where: {
-            id: ladderId,
+            ladderId: ladderId,
         },
     });
 
