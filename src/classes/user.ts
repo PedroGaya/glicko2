@@ -61,8 +61,8 @@ export class User {
             this.ratings[idx].rating = newRating;
         }
 
-        const rating = await updateRating(this.id, ladderId, newRating);
+        const updatedRating = await updateRating(this.id, ladderId, newRating);
 
-        return rating;
+        return { ladderId, rating: newRating };
     }
 }

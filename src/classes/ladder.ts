@@ -1,10 +1,12 @@
+import { createLadder } from "../crud/ladder";
+import { createMatch } from "../crud/match";
 import { Match, RatingPeriod } from "../types";
 import { Elo, EloParams } from "./elo";
 import { Glicko2, GlickoParams } from "./glicko2";
 import { User } from "./user";
 
 export type LadderParams = {
-    id: string;
+    id?: string;
     name: string;
     game: string;
     ratingPeriod: RatingPeriod;
@@ -43,6 +45,15 @@ export class Ladder {
         }
     }
 
+    static async build(params: LadderParams) {
+        const data = await createLadder(params);
+
+        return new Ladder({
+            id: params.id ?? data.id,
+            ...params,
+        });
+    }
+
     public isRated(user: User): boolean {
         return user.ratings
             .map((rating) => {
@@ -51,9 +62,9 @@ export class Ladder {
             .includes(this.id);
     }
 
-    public registerPlayer(user: User) {
+    public async registerPlayer(user: User) {
         if (!this.isRated(user)) {
-            user.updateRatings(this.id, {
+            await user.updateRatings(this.id, {
                 elo: this.elo.getNewRating(),
                 glicko: this.glicko.getNewRating(),
             });
@@ -62,28 +73,28 @@ export class Ladder {
         return user.ratings.find((r) => r.ladderId == this.id);
     }
 
-    private updateElo(match: Match) {
+    private async updateElo(match: Match) {
         const player1 = match.players[0];
         const player2 = match.players[1];
 
         const newRatings = this.elo.updateRating(match);
 
-        player1.updateRatings(this.id, newRatings[0]);
-        player2.updateRatings(this.id, newRatings[1]);
+        await player1.updateRatings(this.id, newRatings[0]);
+        await player2.updateRatings(this.id, newRatings[1]);
     }
 
-    public updateGlicko(player: User, matches: Match[]) {
+    public async updateGlicko(player: User, matches: Match[]) {
         const filtered = matches.filter((match) =>
             match.players.includes(player)
         );
 
         const newRating = this.glicko.updateRating(player, filtered, this.id);
-        player.updateRatings(this.id, newRating);
+        return await player.updateRatings(this.id, newRating);
     }
 
-    public startMatch(player1: User, player2: User) {
-        if (!this.isRated(player1)) this.registerPlayer(player1);
-        if (!this.isRated(player2)) this.registerPlayer(player2);
+    public async startMatch(player1: User, player2: User) {
+        if (!this.isRated(player1)) await this.registerPlayer(player1);
+        if (!this.isRated(player2)) await this.registerPlayer(player2);
 
         const match: Match = {
             id: crypto.randomUUID(),
@@ -99,7 +110,7 @@ export class Ladder {
         return match;
     }
 
-    public endMatch(matchId: string, score: number) {
+    public async endMatch(matchId: string, score: number) {
         const match = this.matchesOngoing.find((match) => match.id == matchId);
 
         const finishedMatch = {
@@ -111,11 +122,13 @@ export class Ladder {
 
         this.matches.push(finishedMatch);
 
-        this.updateElo(finishedMatch);
+        await this.updateElo(finishedMatch);
 
         this.matchesOngoing = this.matchesOngoing.filter(
             (match) => match.id != matchId
         );
+
+        const createdMatch = await createMatch(finishedMatch);
 
         return finishedMatch;
     }

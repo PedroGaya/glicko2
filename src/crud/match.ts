@@ -36,6 +36,7 @@ export const createMatch = async (match: Match) => {
 
     return await prisma.match.create({
         data: {
+            id: match.id,
             ladder: {
                 connect: {
                     id: match.ladderId,
