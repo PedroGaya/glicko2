@@ -3,6 +3,7 @@
     "module": "index.ts",
     "type": "module",
     "scripts": {
+        "test": "bun ./src/test.ts",
         "dev": "bun ./src/index.ts"
     },
     "devDependencies": {
