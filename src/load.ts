@@ -93,3 +93,5 @@ for (const data of ladderData) {
     const ladder = new Ladder(params);
     ladderPool.push(ladder);
 }
+
+console.log(ladderPool[0].players);
