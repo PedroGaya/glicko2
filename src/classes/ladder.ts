@@ -64,7 +64,11 @@ export class Ladder {
     }
 
     public updateGlicko(player: User, matches: Match[]) {
-        const newRating = this.glicko.updateRating(player, matches, this.id);
+        const filtered = matches.filter((match) =>
+            match.players.includes(player)
+        );
+
+        const newRating = this.glicko.updateRating(player, filtered, this.id);
         player.updateRatings(this.id, newRating);
     }
 
