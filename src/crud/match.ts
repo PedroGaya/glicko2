@@ -1,7 +1,7 @@
 import { prisma } from "../client";
 import { Match } from "../types";
 
-export const getMatches = async (userId: string, ladderId: string) => {
+export const getUserMatches = async (userId: string, ladderId: string) => {
     const matches = await prisma.match.findMany({
         where: {
             OR: [
@@ -22,6 +22,15 @@ export const getMatches = async (userId: string, ladderId: string) => {
     return matches.filter((match) => match.ladderId == ladderId);
 };
 
+export const getLadderMatches = async (ladderId: string) => {
+    const matches = await prisma.match.findMany({
+        where: {
+            id: ladderId,
+        },
+    });
+
+    return matches.filter((match) => match.ladderId == ladderId);
+};
 export const createMatch = async (match: Match) => {
     if (!match.finished) throw "Match is not yet finished.";
 
