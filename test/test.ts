@@ -1,6 +1,6 @@
 import { sleep } from "bun";
-import { Ladder } from "./classes/ladder";
-import { User } from "./classes/user";
+import { Ladder } from "../src/classes/ladder";
+import { User } from "../src/classes/user";
 
 try {
     const gaya = await User.build({ name: "gaya", ratings: [] });
