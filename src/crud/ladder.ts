@@ -1,5 +1,5 @@
 import { LadderParams } from "../classes/ladder";
-import { prisma } from "../client";
+import { prisma } from "../../libs/prisma";
 
 export const getLadders = async () => {
     return await prisma.ladder.findMany();

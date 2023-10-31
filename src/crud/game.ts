@@ -1,4 +1,4 @@
-import { prisma } from "../client";
+import { prisma } from "../../libs/prisma";
 
 export const getGames = async () => {
     return await prisma.game.findMany();

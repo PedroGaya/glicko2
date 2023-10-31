@@ -1,4 +1,4 @@
-import { prisma } from "../client";
+import { prisma } from "../../libs/prisma";
 import { Rating } from "../types";
 
 export const getLadderRatings = async (ladderId: string) => {

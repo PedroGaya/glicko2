@@ -1,4 +1,4 @@
-import { prisma } from "../client";
+import { prisma } from "../../libs/prisma";
 import { Match } from "../types";
 
 export const getUserMatches = async (userId: string, ladderId: string) => {
