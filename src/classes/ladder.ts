@@ -81,6 +81,18 @@ export class Ladder {
 
         await player1.updateRatings(this.id, newRatings[0]);
         await player2.updateRatings(this.id, newRatings[1]);
+
+        await updateRatedMatch(
+            match,
+            {
+                elo: true,
+                glicko: false,
+            },
+            {
+                elo: true,
+                glicko: false,
+            }
+        );
     }
 
     public async updateGlicko(player: User, matches: Match[]) {
@@ -151,21 +163,8 @@ export class Ladder {
             finished: true,
             score: score,
         };
-
-        await this.updateElo(finishedMatch);
         const createdMatch = await createMatch(finishedMatch);
-
-        await updateRatedMatch(
-            finishedMatch,
-            {
-                elo: true,
-                glicko: false,
-            },
-            {
-                elo: true,
-                glicko: false,
-            }
-        );
+        await this.updateElo(finishedMatch);
 
         this.matchesOngoing = this.matchesOngoing.filter(
             (match) => match.id != matchId
