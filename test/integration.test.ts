@@ -3,21 +3,16 @@ import { expect, test } from "bun:test";
 import { Ladder } from "../src/classes/ladder";
 import { User } from "../src/classes/user";
 
-const gaya = await User.build({ name: "gaya", ratings: [] });
-const carlos = await User.build({ name: "carlos", ratings: [] });
-const natan = await User.build({ name: "natan", ratings: [] });
-const zoro = await User.build({ name: "zoro", ratings: [] });
-
 const ladder = await Ladder.build({
-    game: "OPTCG",
-    name: "OPTCG-Fortaleza",
+    game: "Glickman",
+    name: "Glicko2 Testing Ladder",
     elo: {
         defaultRating: 1000,
         defaultK: 50,
     },
     glicko: {
         defaultRating: 1500,
-        defaultRatingDeviation: 300,
+        defaultRatingDeviation: 200,
         defaultVolatility: 0.06,
         tau: 0.5,
     },
@@ -26,27 +21,14 @@ const ladder = await Ladder.build({
         hours: 24,
     },
     matches: [],
-    players: [gaya, carlos],
+    players: [],
 });
 
-const matches = [];
-let match;
+const player = await User.build({
+    name: "player",
+    ratings: [],
+});
 
-match = await ladder.startMatch(gaya, zoro);
-match = await ladder.endMatch(match.id, 0);
-matches.push(match);
-
-match = await ladder.startMatch(natan, carlos);
-match = await ladder.endMatch(match.id, 0);
-matches.push(match);
-
-match = await ladder.startMatch(carlos, zoro);
-match = await ladder.endMatch(match.id, 0);
-matches.push(match);
-
-await ladder.updateGlicko(gaya, matches);
-await ladder.updateGlicko(zoro, matches);
-await ladder.updateGlicko(natan, matches);
-await ladder.updateGlicko(carlos, matches);
-
-console.log(JSON.stringify(ladder.players));
+const op1400 = await User.build({ name: "1400", ratings: [] });
+const op1550 = await User.build({ name: "1550", ratings: [] });
+const op1700 = await User.build({ name: "1700", ratings: [] });
