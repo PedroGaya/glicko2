@@ -33,7 +33,8 @@ export const getLadderMatches = async (ladderId: string) => {
 };
 export const createMatch = async (match: Match) => {
     if (!match.finished || !match.end) throw "Match is not yet finished.";
-    if (!match.score) throw "Invalid score.";
+    if (match.score === null || match.score === undefined)
+        throw "Invalid score.";
 
     return await prisma.match.create({
         data: {

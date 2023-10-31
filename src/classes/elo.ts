@@ -32,7 +32,8 @@ export class Elo {
         const p1r = players[0].getRating(ladderId);
         const p2r = players[1].getRating(ladderId);
 
-        if (!score) throw "Can't update null score. Aborting";
+        if (score === null || score === undefined)
+            throw "Can't update null score. Aborting.";
 
         const p1s = score; // Actual score for p1
         const p2s = 1 - score; // Actual score for p2

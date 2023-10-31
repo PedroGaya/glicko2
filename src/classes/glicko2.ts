@@ -71,7 +71,8 @@ export class Glicko2 {
             const opponent = match.players[1 - match.players.indexOf(user)];
             const opponentRating = opponent.getRating(ladderId);
 
-            if (!match.score) throw "Can't update null score. Aborting";
+            if (match.score === null || match.score === undefined)
+                throw "Can't update null score. Aborting.";
 
             const score =
                 match.score == 0.5
