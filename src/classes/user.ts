@@ -22,27 +22,11 @@ export class User {
 
     static async build(params: UserParams) {
         const user = await createUser(params.name);
-        const ratings = await getUserRatings(user.id);
 
         return new User({
             id: params.id ?? user.id,
             name: user.name,
-            ratings: ratings.map((r) => {
-                return {
-                    ladderId: r.ladderId,
-                    rating: {
-                        elo: {
-                            rating: r.eloRating,
-                            k_value: r.eloK,
-                        },
-                        glicko: {
-                            rating: r.glickoRating,
-                            deviation: r.glickoDeviation,
-                            volatility: r.glickoVolatility,
-                        },
-                    },
-                };
-            }),
+            ratings: [],
         });
     }
 
