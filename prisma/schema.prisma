@@ -56,16 +56,18 @@ model Rating {
 }
 
 model Match {
-  id             String   @id @default(uuid())
-  ladder         Ladder   @relation(fields: [ladderId], references: [id])
-  ladderId       String
-  playerOne      User     @relation("playerOne", fields: [playerOneId], references: [id])
-  playerOneId    String
-  playerTwo      User     @relation("playerTwo", fields: [playerTwoId], references: [id])
-  playerTwoId    String
-  start          DateTime
-  end            DateTime
-  score          Int
-  ratedPlayerOne Boolean
-  ratedPlayerTwo Boolean
+  id                      String   @id @default(uuid())
+  ladder                  Ladder   @relation(fields: [ladderId], references: [id])
+  ladderId                String
+  playerOne               User     @relation("playerOne", fields: [playerOneId], references: [id])
+  playerOneId             String
+  playerTwo               User     @relation("playerTwo", fields: [playerTwoId], references: [id])
+  playerTwoId             String
+  start                   DateTime
+  end                     DateTime
+  score                   Int
+  hasGlickoRatedPlayerOne Boolean
+  hasGlickoRatedPlayerTwo Boolean
+  hasEloRatedPlayerOne    Boolean
+  hasEloRatedPlayerTwo    Boolean
 }
