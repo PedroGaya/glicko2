@@ -10,6 +10,7 @@
         "composite": true,
         "downlevelIteration": true,
         "skipLibCheck": true,
+        "strict": true,
         "jsx": "react-jsx",
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,

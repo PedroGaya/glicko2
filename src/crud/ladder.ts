@@ -26,7 +26,7 @@ export const createLadder = async (params: LadderParams) => {
             glickoVolatility: params.glicko.defaultVolatility,
             glickoTau: params.glicko.tau,
             ratingPeriodGames: params.ratingPeriod.games,
-            ratingPeriodHours: params.ratingPeriod.hours,
+            ratingPeriodHours: params.ratingPeriod.hours ?? 24,
         },
     });
 };

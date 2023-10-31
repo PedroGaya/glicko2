@@ -14,7 +14,7 @@ export class User {
     ratings: { ladderId: string; rating: Rating }[];
 
     constructor(params: UserParams) {
-        this.id = params.id;
+        this.id = params.id ?? crypto.randomUUID();
 
         this.name = params.name;
         this.ratings = params.ratings;
@@ -31,7 +31,9 @@ export class User {
     }
 
     public getRating(ladderId: string) {
-        return this.ratings.find((r) => r.ladderId == ladderId).rating;
+        const ratings = this.ratings.find((r) => r.ladderId == ladderId);
+        if (!ratings) throw "User is not rated in this ladder.";
+        return ratings.rating;
     }
 
     public async updateRatings(ladderId: string, newRating: Rating) {

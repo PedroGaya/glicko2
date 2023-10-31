@@ -56,6 +56,8 @@ export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
             const p1 = userPool.find((user) => user.id == data.playerOneId);
             const p2 = userPool.find((user) => user.id == data.playerTwoId);
 
+            if (!p1 || !p2) throw "Users not found in user pool.";
+
             matches.push({
                 id: data.id,
                 ladderId: data.ladderId,

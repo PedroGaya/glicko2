@@ -71,6 +71,8 @@ export class Glicko2 {
             const opponent = match.players[1 - match.players.indexOf(user)];
             const opponentRating = opponent.getRating(ladderId);
 
+            if (!match.score) throw "Can't update null score. Aborting";
+
             const score =
                 match.score == 0.5
                     ? 0.5
@@ -101,7 +103,7 @@ export class Glicko2 {
         let phi2 = phi * phi;
         let delta2 = delta * delta;
 
-        const f = (x) => {
+        const f = (x: number) => {
             let ePowX = Math.exp(x);
 
             return (
@@ -112,7 +114,7 @@ export class Glicko2 {
         };
 
         let A = a;
-        let B;
+        let B: number;
 
         if (delta2 > phi2 + v) {
             B = Math.log(delta2 - phi2 - v);

@@ -29,7 +29,7 @@ export class Ladder {
     players: User[];
 
     constructor(params: LadderParams) {
-        this.id = params.id;
+        this.id = params.id ?? crypto.randomUUID();
 
         this.name = params.name;
         this.elo = new Elo(params.elo);
@@ -112,6 +112,8 @@ export class Ladder {
 
     public async endMatch(matchId: string, score: number) {
         const match = this.matchesOngoing.find((match) => match.id == matchId);
+
+        if (!match) throw "Couldn't find ongoing match with this id.";
 
         const finishedMatch = {
             ...match,
