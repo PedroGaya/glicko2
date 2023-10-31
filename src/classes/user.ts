@@ -26,7 +26,7 @@ export class User {
         return new User({
             id: params.id ?? user.id,
             name: user.name,
-            ratings: [],
+            ratings: params.ratings,
         });
     }
 
