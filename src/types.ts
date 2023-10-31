@@ -21,4 +21,12 @@ export type Match = {
     end?: Date;
     finished: boolean;
     score: number | null;
+    hasRatedPlayerOne: {
+        elo: boolean;
+        glicko: boolean;
+    };
+    hasRatedPlayerTwo: {
+        elo: boolean;
+        glicko: boolean;
+    };
 };

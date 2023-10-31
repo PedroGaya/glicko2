@@ -57,6 +57,39 @@ export const createMatch = async (match: Match) => {
             start: match.start,
             end: match.end,
             score: match.score,
+            hasGlickoRatedPlayerOne: false,
+            hasGlickoRatedPlayerTwo: false,
+            hasEloRatedPlayerOne: true,
+            hasEloRatedPlayerTwo: true,
         },
     });
+};
+
+export const updateRatedMatch = async (
+    match: Match,
+    hasRatedPlayerOne: {
+        elo: boolean;
+        glicko: boolean;
+    },
+    hasRatedPlayerTwo: {
+        elo: boolean;
+        glicko: boolean;
+    }
+) => {
+    const updated = await prisma.match.update({
+        where: {
+            id: match.id,
+        },
+        data: {
+            hasGlickoRatedPlayerOne: hasRatedPlayerOne.glicko,
+            hasGlickoRatedPlayerTwo: hasRatedPlayerTwo.glicko,
+            hasEloRatedPlayerOne: hasRatedPlayerOne.elo,
+            hasEloRatedPlayerTwo: hasRatedPlayerTwo.elo,
+        },
+    });
+
+    match.hasRatedPlayerOne = hasRatedPlayerOne;
+    match.hasRatedPlayerTwo = hasRatedPlayerTwo;
+
+    return updated;
 };

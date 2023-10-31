@@ -66,6 +66,14 @@ export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
                 end: data.end,
                 finished: true,
                 score: data.score,
+                hasRatedPlayerOne: {
+                    elo: data.hasEloRatedPlayerOne,
+                    glicko: data.hasGlickoRatedPlayerOne,
+                },
+                hasRatedPlayerTwo: {
+                    elo: data.hasEloRatedPlayerTwo,
+                    glicko: data.hasGlickoRatedPlayerTwo,
+                },
             });
         }
 

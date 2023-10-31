@@ -1,5 +1,5 @@
 import { createLadder } from "../crud/ladder";
-import { createMatch } from "../crud/match";
+import { createMatch, updateRatedMatch } from "../crud/match";
 import { Match, RatingPeriod } from "../types";
 import { Elo, EloParams } from "./elo";
 import { Glicko2, GlickoParams } from "./glicko2";
@@ -89,6 +89,28 @@ export class Ladder {
         );
 
         const newRating = this.glicko.updateRating(player, filtered, this.id);
+
+        for (const match of matches) {
+            switch (match.players.indexOf(player) + 1) {
+                case 1:
+                    match.hasRatedPlayerOne = {
+                        ...match.hasRatedPlayerOne,
+                        glicko: true,
+                    };
+                    break;
+                case 2:
+                    match.hasRatedPlayerTwo = {
+                        ...match.hasRatedPlayerTwo,
+                        glicko: true,
+                    };
+                    break;
+            }
+            await updateRatedMatch(
+                match,
+                match.hasRatedPlayerOne,
+                match.hasRatedPlayerTwo
+            );
+        }
         return await player.updateRatings(this.id, newRating);
     }
 
@@ -103,6 +125,14 @@ export class Ladder {
             start: new Date(),
             finished: false,
             score: null,
+            hasRatedPlayerOne: {
+                elo: false,
+                glicko: false,
+            },
+            hasRatedPlayerTwo: {
+                elo: false,
+                glicko: false,
+            },
         };
 
         this.matchesOngoing.push(match);
@@ -122,15 +152,25 @@ export class Ladder {
             score: score,
         };
 
-        this.matches.push(finishedMatch);
-
         await this.updateElo(finishedMatch);
+        const createdMatch = await createMatch(finishedMatch);
+
+        await updateRatedMatch(
+            finishedMatch,
+            {
+                elo: true,
+                glicko: false,
+            },
+            {
+                elo: true,
+                glicko: false,
+            }
+        );
 
         this.matchesOngoing = this.matchesOngoing.filter(
             (match) => match.id != matchId
         );
-
-        const createdMatch = await createMatch(finishedMatch);
+        this.matches.push(finishedMatch);
 
         return finishedMatch;
     }
