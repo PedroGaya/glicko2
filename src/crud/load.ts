@@ -1,13 +1,13 @@
-import { Ladder, LadderParams } from "./classes/ladder";
-import { User, UserParams } from "./classes/user";
+import { Ladder, LadderParams } from "../classes/ladder";
+import { User, UserParams } from "../classes/user";
 
-import { getGames } from "./crud/game";
-import { getLadders } from "./crud/ladder";
-import { getLadderMatches } from "./crud/match";
-import { getUserRatings } from "./crud/rating";
-import { getUsers } from "./crud/user";
+import { getGames } from "./game";
+import { getLadders } from "./ladder";
+import { getLadderMatches } from "./match";
+import { getUserRatings } from "./rating";
+import { getUsers } from "./user";
 
-import { Match, Rating } from "./types";
+import { Match, Rating } from "../types";
 
 export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
     const gameData = await getGames();

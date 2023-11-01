@@ -2,7 +2,6 @@ import { test, expect, describe } from "bun:test";
 
 import { Ladder } from "../src/classes/ladder";
 import { User } from "../src/classes/user";
-import { Match } from "../src/types";
 
 import {
     ladderTestParams,
@@ -11,7 +10,7 @@ import {
     setTestMatches,
     getTestMatches,
 } from "./setup";
-import { loadData } from "../src/load";
+import { loadData } from "../src/crud/load";
 
 describe("Create the basic data entities.", async () => {
     test("Create a ladder", async () => {
