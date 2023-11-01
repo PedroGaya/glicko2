@@ -11,8 +11,9 @@ import {
     setTestMatches,
     getTestMatches,
 } from "./setup";
+import { loadData } from "../src/load";
 
-describe("Creating the basic data entities.", async () => {
+describe("Create the basic data entities.", async () => {
     test("Create a ladder", async () => {
         const ladder = getTestLadder();
         const params = ladderTestParams;
@@ -85,7 +86,7 @@ describe("Play some matches and calculate rating updates", async () => {
         expect(ladder.matchesOngoing).toBeArrayOfSize(3);
     });
 
-    test("Finish matches.", async () => {
+    test("Finish matches", async () => {
         const ladder = getTestLadder();
         const matches = getTestMatches();
 
@@ -109,18 +110,19 @@ describe("Play some matches and calculate rating updates", async () => {
         expect(ladder.matches).toBeArrayOfSize(3);
     });
 
-    test("Calculate ratings", () => {
+    test("Calculate ratings", async () => {
         const ladder = getTestLadder();
         const { player, op1400, op1550, op1700 } = getTestPlayers();
+        const matches = getTestMatches();
 
         const playerRating = {
             glicko: {
-                rating: 1500,
-                deviation: 200,
-                volatility: 0.06,
+                deviation: 151.5165,
+                rating: 1464.0507,
+                volatility: 0.059996,
             },
             elo: {
-                rating: 1008.2427703830168,
+                rating: 1008.2427,
                 k_value: 27,
             },
         };
@@ -132,12 +134,38 @@ describe("Play some matches and calculate rating updates", async () => {
                 volatility: 0.06,
             },
             elo: {
-                rating: 1042.1536756016758,
+                rating: 1042.1537,
                 k_value: 80,
             },
         };
 
+        await ladder.updateGlicko(player, matches);
         expect(player.getRating(ladder.id)).toEqual(playerRating);
+        expect(ladder.glicko.getGXE(op1400.getRating(ladder.id))).toEqual(
+            40.51
+        );
         expect(op1700.getRating(ladder.id)).toEqual(op1700rating);
+    });
+});
+
+describe("Load data and recreate state", () => {
+    const userPool: User[] = [];
+    const ladderPool: Ladder[] = [];
+    test("Recreate state", async () => {
+        await loadData(userPool, ladderPool);
+
+        expect(userPool).toBeArrayOfSize(4);
+        expect(ladderPool).toBeArrayOfSize(1);
+
+        const expectedPlayer = getTestPlayers()["player"];
+        const testPlayer = userPool.find((user) => user.name == "player");
+
+        const expectedLadder = getTestLadder();
+        const testLadder = ladderPool.find(
+            (ladder) => ladder.id == expectedLadder.id
+        );
+
+        expect(testLadder).toEqual(expectedLadder);
+        expect(testPlayer).toEqual(expectedPlayer);
     });
 });

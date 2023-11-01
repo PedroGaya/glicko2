@@ -63,7 +63,6 @@ export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
                 ladderId: data.ladderId,
                 players: [p1, p2],
                 start: data.start,
-                end: data.end,
                 finished: true,
                 score: data.score,
                 hasRatedPlayerOne: {
@@ -74,15 +73,14 @@ export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
                     elo: data.hasEloRatedPlayerTwo,
                     glicko: data.hasGlickoRatedPlayerTwo,
                 },
+                end: data.end,
             });
         }
-
-        console.log(matchData);
 
         const params: LadderParams = {
             id: data.id,
             name: data.name,
-            game: "whatever",
+            game: "Glickman",
             ratingPeriod: {
                 games: data.ratingPeriodGames,
                 hours: data.ratingPeriodHours,

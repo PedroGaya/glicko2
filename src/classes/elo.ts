@@ -47,8 +47,10 @@ export class Elo {
         const p1k = this.getK(p1r.elo.rating, p1s);
         const p2k = this.getK(p2r.elo.rating, p2s);
 
-        const new_p1r = p1r.elo.rating + p1k * (p1s - p1e);
-        const new_p2r = p2r.elo.rating + p2k * (p2s - p2e);
+        const new_p1r =
+            Math.round((p1r.elo.rating + p1k * (p1s - p1e)) * 10000) / 10000;
+        const new_p2r =
+            Math.round((p2r.elo.rating + p2k * (p2s - p2e)) * 10000) / 10000;
 
         return [
             {

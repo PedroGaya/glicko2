@@ -156,9 +156,9 @@ export class Glicko2 {
         const new_RD = 173.7178 * new_phi;
 
         const newGlickoRating = {
-            rating: new_rating,
-            deviation: new_RD,
-            volatility: new_vol,
+            rating: Math.round(new_rating * 10000) / 10000,
+            deviation: Math.round(new_RD * 10000) / 10000,
+            volatility: Math.round(new_vol * 1000000) / 1000000,
         };
 
         return {
