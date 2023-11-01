@@ -19,6 +19,7 @@ export type LadderParams = {
 export class Ladder {
     id: string;
     name: string;
+    game: string;
     elo: Elo;
     glicko: Glicko2;
     ratingPeriod: RatingPeriod;
@@ -31,6 +32,7 @@ export class Ladder {
     constructor(params: LadderParams) {
         this.id = params.id ?? crypto.randomUUID();
 
+        this.game = params.game;
         this.name = params.name;
         this.elo = new Elo(params.elo);
         this.glicko = new Glicko2(params.glicko);

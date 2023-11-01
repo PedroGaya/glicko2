@@ -4,6 +4,7 @@ import { prisma } from "../libs/prisma";
 import { User } from "../src/classes/user";
 import { Ladder } from "../src/classes/ladder";
 import { Match } from "../src/types";
+import { createGame } from "../src/crud/game";
 
 let player: User | undefined,
     op1400: User | undefined,
@@ -45,8 +46,10 @@ beforeAll(async () => {
     await prisma.ladder.deleteMany();
     await prisma.game.deleteMany();
 
+    const newGame = await createGame("Glickman");
+
     console.log("Building test ladder...");
-    ladder = await Ladder.build(ladderTestParams);
+    ladder = await Ladder.build({ ...ladderTestParams, game: newGame.name });
 
     console.log("Building test players...");
     player = await User.build({

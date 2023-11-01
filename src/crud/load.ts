@@ -77,10 +77,14 @@ export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
             });
         }
 
+        const game = gameData.find((game) => game.id == data.gameId);
+
+        if (!game) throw "Ladder has no associated game.";
+
         const params: LadderParams = {
             id: data.id,
             name: data.name,
-            game: "Glickman",
+            game: game.name,
             ratingPeriod: {
                 games: data.ratingPeriodGames,
                 hours: data.ratingPeriodHours,
