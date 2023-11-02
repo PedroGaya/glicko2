@@ -11,6 +11,8 @@ import {
     getTestMatches,
 } from "./setup";
 import { loadData } from "../src/crud/load";
+import { getLadderRatings } from "../src/crud/rating";
+import { getUserMatches } from "../src/crud/match";
 
 describe("Create the basic data entities.", async () => {
     test("Create a ladder", async () => {
@@ -150,6 +152,7 @@ describe("Play some matches and calculate rating updates", async () => {
 describe("Load data and recreate state", () => {
     const userPool: User[] = [];
     const ladderPool: Ladder[] = [];
+
     test("Recreate state", async () => {
         await loadData(userPool, ladderPool);
 
@@ -166,5 +169,30 @@ describe("Load data and recreate state", () => {
 
         expect(testLadder).toEqual(expectedLadder);
         expect(testPlayer).toEqual(expectedPlayer);
+    });
+
+    test("Check ladder ratings", async () => {
+        const ladder = ladderPool.find(
+            (ladder) => ladder.id == getTestLadder().id
+        );
+        if (!ladder) throw "Failed to load ladder.";
+
+        const ratings = await getLadderRatings(ladder.id);
+        expect(ratings).toBeArrayOfSize(4);
+        expect(ratings.map((r) => r.userId)).toContain(ladder.players[0].id);
+    });
+
+    test("Check user matches", async () => {
+        const player = userPool.find((user) => user.name == "player");
+        const ladder = ladderPool.find(
+            (ladder) => ladder.id == getTestLadder().id
+        );
+
+        if (!ladder) throw "Failed to load ladder.";
+        if (!player) throw "Failed to load player.";
+
+        const matches = await getUserMatches(player.id, ladder.id);
+
+        expect(matches).toBeArrayOfSize(3);
     });
 });
