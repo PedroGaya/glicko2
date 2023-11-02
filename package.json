@@ -1,19 +1,20 @@
 {
-    "name": "glicko2",
-    "module": "index.ts",
-    "type": "module",
-    "scripts": {
-        "dev": "bun run --watch ./src/index.ts"
-    },
-    "devDependencies": {
-        "bun-types": "latest"
-    },
-    "peerDependencies": {
-        "typescript": "^5.0.0"
-    },
-    "dependencies": {
-        "@prisma/client": "^5.4.2",
-        "elysia": "^0.7.21",
-        "prisma": "^5.4.2"
-    }
+  "name": "glicko2",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch ./src/index.ts"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.4.2",
+    "elysia": "^0.7.21",
+    "prisma": "^5.4.2",
+    "winston": "^3.11.0"
+  }
 }
