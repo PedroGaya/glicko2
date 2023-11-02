@@ -9,6 +9,7 @@ Open software made for running tournaments and ranked ladders.
 -   [ ] Implement tournament interface
     -   [ ] Talk to Marcos about what software he uses
 -   [ ] Check out the Web Debugger thing
+-   [ ] Proper log levels for dev/production
 
 ### In Progress
 
