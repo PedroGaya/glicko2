@@ -5,6 +5,7 @@ import { User } from "../src/classes/user";
 import { Ladder } from "../src/classes/ladder";
 import { Match } from "../src/types";
 import { createGame } from "../src/crud/game";
+import { NODE_ENV } from "../libs/constants";
 
 let player: User | undefined,
     op1400: User | undefined,
@@ -36,7 +37,7 @@ export const ladderTestParams = {
 };
 
 beforeAll(async () => {
-    if (Bun.env.NODE_ENV != "development")
+    if (NODE_ENV != "development")
         throw "Running integration tests in production! Aborting.";
 
     console.log("Reseting development database...");
