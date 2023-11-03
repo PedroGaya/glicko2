@@ -14,7 +14,13 @@ Open software made for running tournaments and ranked ladders.
 ### In Progress
 
 -   [ ] Implement API routes
-    -   [ ] Make this server good at handling lots of requests
+    -   [ ] /game/create
+    -   [ ] /user/create
+    -   [ ] /ladder/create
+    -   [ ] /ladder/register/:userId
+    -   [ ] /match/start
+    -   [ ] /match/end
+    -   [ ] /ladder/update
 
 ### Done ✓
 

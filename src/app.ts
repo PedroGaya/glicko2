@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import user from "./routes/user";
+import users from "./routes/user";
 import { loadData } from "./crud/load";
 import { User } from "./classes/user";
 import { Ladder } from "./classes/ladder";
@@ -14,6 +14,6 @@ const app = new Elysia()
     .state("ladders", ladderPool as Ladder[])
     .get("/", () => "OK");
 
-app.use(user);
+app.use(users);
 
 export default app;
