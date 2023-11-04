@@ -1,6 +1,8 @@
 import Elysia from "elysia";
 import { store } from "../../../libs/store";
 import { Ladder, LadderParams } from "../../classes/ladder";
+import { getUserMatches } from "../../crud/match";
+import { Match } from "../../types";
 
 export const ladderService = new Elysia({ name: "ladderService" })
     .use(store)
@@ -12,10 +14,14 @@ export const ladderService = new Elysia({ name: "ladderService" })
         },
         registerPlayer: async (ladderId: string, userId: string) => {
             const ladder = getLadder(ladderId);
-            if (!ladder) throw "Ladder not found.";
-
             const user = getUser(userId);
 
             return await ladder.registerPlayer(user);
+        },
+        updateGlicko: async (ladderId: string, userId: string) => {
+            const ladder = getLadder(ladderId);
+            const user = getUser(userId);
+
+            return await ladder.updateGlicko(user, ladder.matches);
         },
     }));

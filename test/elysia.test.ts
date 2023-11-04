@@ -226,4 +226,32 @@ describe("Elysia", () => {
             expect(playerRating).toBeGreaterThan(opponentRating);
         });
     });
+
+    describe("Update Glicko2 ratings", async () => {
+        test("/ladders/updateGlicko", async () => {
+            const ladder = app.store.ladders.find(
+                (ladder) => ladder.name == "ladder"
+            );
+            const user = app.store.users.find((user) => user.name == "user");
+
+            const response: any = await app
+                .handle(
+                    new Request(APP_URL + "/ladders/updateGlicko", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            ladderId: ladder?.id,
+                            userId: user?.id,
+                        }),
+                    })
+                )
+                .then(async (res) => res.json());
+
+            expect(user?.ratings[0]).toEqual(response);
+            expect(response).toBeDefined();
+            expect(response.ladderId).toBe(ladder?.id);
+        });
+    });
 });

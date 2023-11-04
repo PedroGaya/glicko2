@@ -18,6 +18,13 @@ const users = new Elysia({ prefix: "/ladders" })
             return await registerPlayer(body.ladderId, body.userId);
         },
         { body: "registerPlayerSchema" }
+    )
+    .post(
+        "/updateGlicko",
+        async ({ updateGlicko, body }) => {
+            return await updateGlicko(body.ladderId, body.userId);
+        },
+        { body: "updateGlickoSchema" }
     );
 
 export default users;

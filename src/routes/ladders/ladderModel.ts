@@ -23,4 +23,8 @@ export const ladderModel = new Elysia().model({
         ladderId: t.String(),
         userId: t.String(),
     }),
+    updateGlickoSchema: t.Object({
+        ladderId: t.String(),
+        userId: t.String(),
+    }),
 });
