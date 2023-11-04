@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia";
 
 export const userModel = new Elysia().model({
-    createSchema: t.Object({
+    createUserSchema: t.Object({
         name: t.String(),
         ratings: t.Array(
             t.Object({

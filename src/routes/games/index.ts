@@ -3,14 +3,14 @@ import { gameService } from "./gameService";
 import { gameModel } from "./gameModel";
 
 export const gamesController = new Elysia({ prefix: "/games" })
-    .use(gameService)
     .use(gameModel)
+    .use(gameService)
     .post(
         "/create",
         async ({ create, body }) => {
             const game = await create(body);
             return game;
         },
-        { body: "createSchema" }
+        { body: "createGameSchema" }
     );
 export default gamesController;
