@@ -1,8 +1,9 @@
 import { Elysia } from "elysia";
+import logger from "../libs/logger";
 
 import games from "./routes/games";
 import users from "./routes/users";
-import logger from "../libs/logger";
+import ladders from "./routes/ladders";
 
 const app = new Elysia()
     .onRequest(({ request }) => {
@@ -26,6 +27,7 @@ const app = new Elysia()
     })
     .get("/", () => "OK")
     .use(games)
-    .use(users);
+    .use(users)
+    .use(ladders);
 
 export default app;
