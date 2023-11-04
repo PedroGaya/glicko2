@@ -72,7 +72,10 @@ export class Ladder {
             });
         }
         this.players.push(user);
-        return user.ratings.find((r) => r.ladderId == this.id);
+        const rating = user.ratings.find((r) => r.ladderId == this.id);
+        if (!rating)
+            throw `Failed to register user (${user.id}) to ladder (${this.id})`;
+        return rating;
     }
 
     private async updateElo(match: Match) {
