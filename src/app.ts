@@ -4,6 +4,7 @@ import logger from "../libs/logger";
 import games from "./routes/games";
 import users from "./routes/users";
 import ladders from "./routes/ladders";
+import matches from "./routes/matches";
 
 const app = new Elysia()
     .onRequest(({ request }) => {
@@ -23,11 +24,12 @@ const app = new Elysia()
             stack: error.stack,
         };
         logger.error(message);
-        return new Response(error.toString());
+        return new Response(error.message);
     })
     .get("/", () => "OK")
     .use(games)
     .use(users)
-    .use(ladders);
+    .use(ladders)
+    .use(matches);
 
 export default app;

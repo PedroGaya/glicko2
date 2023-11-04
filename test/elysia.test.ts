@@ -5,6 +5,7 @@ import app from "../src/app";
 
 import { User } from "../src/classes/user";
 import { Ladder } from "../src/classes/ladder";
+import { Match } from "../src/types";
 
 describe("Elysia", () => {
     test("Health check", async () => {
@@ -135,6 +136,94 @@ describe("Elysia", () => {
             expect(ladder?.players).toBeArrayOfSize(1);
             expect(user?.ratings).toBeArrayOfSize(1);
             expect(user?.ratings[0].ladderId).toEqual(ladder?.id);
+        });
+    });
+
+    describe("/matches", async () => {
+        const url = APP_URL + "/matches";
+        test("/startMatch", async () => {
+            const ladder = app.store.ladders.find(
+                (ladder) => ladder.name == "ladder"
+            );
+            const player = app.store.users.find((user) => user.name == "user");
+            const opponent = (await app
+                .handle(
+                    new Request(APP_URL + "/users/create", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            name: "opponent",
+                            ratings: [],
+                        }),
+                    })
+                )
+                .then(async (res) => res.json())) as User;
+
+            const registration: any = await app
+                .handle(
+                    new Request(APP_URL + "/ladders/register", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            ladderId: ladder?.id,
+                            userId: opponent.id,
+                        }),
+                    })
+                )
+                .then(async (res) => res.json());
+
+            const match: any = (await app
+                .handle(
+                    new Request(url + "/startMatch", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            ladderId: ladder?.id,
+                            playerOneId: player?.id,
+                            playerTwoId: opponent.id,
+                        }),
+                    })
+                )
+                .then(async (res) => res.json())) as Match;
+
+            expect(match).toBeDefined();
+            expect(match.id).toBeTypeOf("string");
+            expect(match.finished).toBeFalse();
+        });
+
+        test("/endMatch", async () => {
+            const ladder = app.store.ladders.find(
+                (ladder) => ladder.name == "ladder"
+            );
+            const match = ladder?.matchesOngoing[0];
+
+            const response = (await app
+                .handle(
+                    new Request(url + "/endMatch", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            ladderId: ladder?.id,
+                            matchId: match?.id,
+                            score: 1,
+                        }),
+                    })
+                )
+                .then(async (res) => res.json())) as Match;
+
+            const playerRating =
+                response.players[0].ratings[0].rating.elo.rating;
+            const opponentRating =
+                response.players[1].ratings[0].rating.elo.rating;
+            expect(playerRating).toBeGreaterThan(opponentRating);
         });
     });
 });
