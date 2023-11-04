@@ -1,21 +1,11 @@
 import { Elysia } from "elysia";
-import users from "./routes/user";
-import { loadData } from "./crud/load";
-import { User } from "./classes/user";
-import { Ladder } from "./classes/ladder";
-import games from "./routes/game";
 
-const userPool: User[] = [];
-const ladderPool: Ladder[] = [];
-
-await loadData(userPool, ladderPool);
+import games from "./routes/games";
+import { store } from "../libs/store";
 
 const app = new Elysia()
-    .state("users", userPool as User[])
-    .state("ladders", ladderPool as Ladder[])
-    .get("/", () => "OK");
-
-app.use(users);
-app.use(games);
+    .use(store)
+    .get("/", () => "OK")
+    .use(games);
 
 export default app;
