@@ -199,6 +199,5 @@ describe("Load data and recreate state", () => {
 });
 
 afterAll(async () => {
-    console.log("Finished running integration tests. Cleaning up database.");
     await prismaCleanup();
 });

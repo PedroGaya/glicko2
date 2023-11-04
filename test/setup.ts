@@ -1,4 +1,4 @@
-import { afterAll, beforeAll } from "bun:test";
+import { afterAll, afterEach, beforeAll } from "bun:test";
 import { prisma, prismaCleanup } from "../libs/prisma";
 
 import { User } from "../src/classes/user";
@@ -113,7 +113,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    console.log("Cleaning up the development database...");
+    console.log("Cleaning up development database...");
     await prismaCleanup();
 });
 
