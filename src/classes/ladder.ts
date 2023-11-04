@@ -162,7 +162,7 @@ export class Ladder {
 
         if (!match) throw "Couldn't find ongoing match with this id.";
 
-        const finishedMatch = {
+        const finishedMatch: Match = {
             ...match,
             end: new Date(),
             finished: true,
