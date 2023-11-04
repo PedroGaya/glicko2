@@ -3,6 +3,7 @@ import users from "./routes/user";
 import { loadData } from "./crud/load";
 import { User } from "./classes/user";
 import { Ladder } from "./classes/ladder";
+import games from "./routes/game";
 
 const userPool: User[] = [];
 const ladderPool: Ladder[] = [];
@@ -15,5 +16,6 @@ const app = new Elysia()
     .get("/", () => "OK");
 
 app.use(users);
+app.use(games);
 
 export default app;

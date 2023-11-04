@@ -1,4 +1,4 @@
-import { beforeAll } from "bun:test";
+import { afterAll, beforeAll } from "bun:test";
 import { prisma } from "../libs/prisma";
 
 import { User } from "../src/classes/user";
@@ -114,6 +114,15 @@ beforeAll(async () => {
             },
         ],
     });
+});
+
+afterAll(async () => {
+    console.log("Cleaning up development database...");
+    await prisma.rating.deleteMany();
+    await prisma.match.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.ladder.deleteMany();
+    await prisma.game.deleteMany();
 });
 
 export const getTestLadder = () => {

@@ -1,5 +1,4 @@
 import { Elysia, t } from "elysia";
-import logger from "../../libs/logger";
 import { createGame } from "../crud/game";
 
 const games = new Elysia({ prefix: "/games" });
