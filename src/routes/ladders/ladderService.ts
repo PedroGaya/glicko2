@@ -4,20 +4,17 @@ import { Ladder, LadderParams } from "../../classes/ladder";
 
 export const ladderService = new Elysia({ name: "ladderService" })
     .use(store)
-    .derive(({ store }) => ({
+    .derive(({ store, getUser, getLadder }) => ({
         create: async (params: LadderParams) => {
             const ladder = await Ladder.build(params);
             store.ladders.push(ladder);
             return ladder;
         },
         registerPlayer: async (ladderId: string, userId: string) => {
-            const ladder = store.ladders.find(
-                (ladder) => ladder.id == ladderId
-            );
+            const ladder = getLadder(ladderId);
             if (!ladder) throw "Ladder not found.";
 
-            const user = store.users.find((user) => user.id == userId);
-            if (!user) throw "User not found.";
+            const user = getUser(userId);
 
             return await ladder.registerPlayer(user);
         },
