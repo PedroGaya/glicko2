@@ -1,5 +1,5 @@
 import { afterAll, beforeAll } from "bun:test";
-import { prisma } from "../libs/prisma";
+import { prisma, prismaCleanup } from "../libs/prisma";
 
 import { User } from "../src/classes/user";
 import { Ladder } from "../src/classes/ladder";
@@ -40,12 +40,8 @@ beforeAll(async () => {
     if (NODE_ENV != "development")
         throw "Running integration tests in production! Aborting.";
 
-    console.log("Reseting development database...");
-    await prisma.rating.deleteMany();
-    await prisma.match.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.ladder.deleteMany();
-    await prisma.game.deleteMany();
+    console.log("Reseting development database before tests...");
+    await prismaCleanup();
 
     const newGame = await createGame("Glickman");
 
@@ -117,12 +113,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    console.log("Cleaning up development database...");
-    await prisma.rating.deleteMany();
-    await prisma.match.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.ladder.deleteMany();
-    await prisma.game.deleteMany();
+    console.log("Cleaning up the development database...");
+    await prismaCleanup();
 });
 
 export const getTestLadder = () => {

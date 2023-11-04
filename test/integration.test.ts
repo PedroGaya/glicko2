@@ -1,4 +1,4 @@
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, afterAll } from "bun:test";
 
 import { Ladder } from "../src/classes/ladder";
 import { User } from "../src/classes/user";
@@ -13,6 +13,7 @@ import {
 import { loadData } from "../src/crud/load";
 import { getLadderRatings } from "../src/crud/rating";
 import { getUserMatches } from "../src/crud/match";
+import { prismaCleanup } from "../libs/prisma";
 
 describe("Create the basic data entities.", async () => {
     test("Create a ladder", async () => {
@@ -195,4 +196,9 @@ describe("Load data and recreate state", () => {
 
         expect(matches).toBeArrayOfSize(3);
     });
+});
+
+afterAll(async () => {
+    console.log("Finished running integration tests. Cleaning up database.");
+    await prismaCleanup();
 });
