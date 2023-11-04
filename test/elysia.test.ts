@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { afterAll, describe, expect, test } from "bun:test";
 import { APP_URL } from "../libs/constants";
 
 import app from "../src/app";
@@ -6,6 +6,7 @@ import app from "../src/app";
 import { User } from "../src/classes/user";
 import { Ladder } from "../src/classes/ladder";
 import { Match } from "../src/types";
+import { prismaCleanup } from "../libs/prisma";
 
 describe("Elysia", () => {
     test("Health check", async () => {
@@ -254,4 +255,8 @@ describe("Elysia", () => {
             expect(response.ladderId).toBe(ladder?.id);
         });
     });
+});
+
+afterAll(async () => {
+    await prismaCleanup();
 });
