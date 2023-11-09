@@ -132,6 +132,9 @@ export class Ladder {
     }
 
     public async startMatch(player1: User, player2: User) {
+        if (player1.id == player2.id)
+            throw "Cannot start match with two identical users.";
+
         if (!this.isRated(player1)) await this.registerPlayer(player1);
         if (!this.isRated(player2)) await this.registerPlayer(player2);
 
