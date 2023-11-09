@@ -12,7 +12,9 @@ const logger = createLogger({
                 format.timestamp({
                     format: "MMM-DD-YYYY HH:mm:ss",
                 }),
-                format.prettyPrint()
+                format.prettyPrint({
+                    colorize: true,
+                })
             ),
         }),
     ],
