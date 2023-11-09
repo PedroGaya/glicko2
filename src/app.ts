@@ -8,23 +8,40 @@ import matches from "./routes/matches";
 
 const app = new Elysia()
     .onRequest(({ request }) => {
-        const message = {
+        logger.debug({
             method: request.method,
             url: request.url,
             body: request.body,
-        };
-
-        logger.debug(message);
+        });
     })
-    .onError(({ error }) => {
-        const message = {
-            name: error.name,
-            message: error.message,
-            cause: error.cause,
-            stack: error.stack,
+    .onError(({ set, code, error }) => {
+        let statusCode: number = 500;
+
+        // switch (code) {
+        //     case "UNKNOWN":
+        //         statusCode = 500;
+        //         break;
+        //     case "VALIDATION":
+        //         statusCode = 400;
+        //         break;
+        //     case "NOT_FOUND":
+        //         statusCode = 404;
+        //         break;
+        //     case "PARSE":
+        //         statusCode = 400;
+        //         break;
+        //     case "INTERNAL_SERVER_ERROR":
+        //         statusCode = 500;
+        //         break;
+        //     case "INVALID_COOKIE_SIGNATURE":
+        //         statusCode = 401;
+        //         break;
+        // }
+
+        set.status = statusCode;
+        return {
+            message: error.toString(),
         };
-        logger.error(message);
-        return new Response(error.message);
     })
     .get("/", () => "OK")
     .use(games)
