@@ -1,23 +1,18 @@
 import Elysia from "elysia";
-import { Ladder } from "../src/classes/ladder";
-import { User } from "../src/classes/user";
-import { loadData } from "../src/crud/load";
+import { Manager } from "../src/classes/manager";
 
-export const userPool: User[] = [];
-export const ladderPool: Ladder[] = [];
+const manager = new Manager({
+    players: [],
+    ladders: [],
+});
 
-await loadData(userPool, ladderPool);
+await manager.synchronize();
 
 export const store = new Elysia({ name: "store" })
-    .state("users", userPool as User[])
-    .state("ladders", ladderPool as Ladder[])
+    .state("manager", manager as Manager)
     .decorate("getUser", (userId: string) => {
-        const user = userPool.find((user) => user.id == userId);
-        if (!user) throw `User (${userId}) not found.`;
-        return user;
+        return manager.getPlayer(userId);
     })
     .decorate("getLadder", (ladderId: string) => {
-        const ladder = ladderPool.find((ladder) => ladder.id == ladderId);
-        if (!ladder) throw `Ladder (${ladderId}) not found.`;
-        return ladder;
+        return manager.getLadder(ladderId);
     });

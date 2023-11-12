@@ -8,6 +8,7 @@ export const getLadders = async () => {
 export const createLadder = async (params: LadderParams) => {
     return await prisma.ladder.create({
         data: {
+            id: params.id,
             name: params.name,
             game: {
                 connectOrCreate: {

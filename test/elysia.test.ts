@@ -9,6 +9,8 @@ import { Match } from "../src/types";
 import { prismaCleanup } from "../libs/prisma";
 
 describe("Elysia", () => {
+    let testUserId: string, testLadderId: string;
+
     test("Health check", async () => {
         const response = await app
             .handle(new Request(APP_URL))
@@ -55,9 +57,9 @@ describe("Elysia", () => {
             expect(response.id).toBeTypeOf("string");
             expect(response.name).toEqual("user");
 
-            const resultingUser = app.store.users.find(
-                (user) => user.name == "user"
-            );
+            testUserId = response.id;
+
+            const resultingUser = app.store.manager.getPlayer(response.id);
 
             expect(resultingUser).toBeInstanceOf(User);
             expect(resultingUser?.ratings).toBeArrayOfSize(0);
@@ -101,19 +103,18 @@ describe("Elysia", () => {
 
             expect(response).toBeDefined();
             expect(response.id).toBeTypeOf("string");
-            const resultingLadder = app.store.ladders.find(
-                (ladder) => ladder.id == response.id
-            );
+
+            testLadderId = response.id;
+
+            const resultingLadder = app.store.manager.getLadder(response.id);
             expect(resultingLadder).toBeInstanceOf(Ladder);
             expect(resultingLadder?.name).toEqual("ladder");
             expect(resultingLadder?.game).toEqual("game");
         });
 
         test("/register", async () => {
-            const user = app.store.users.find((user) => user.name == "user");
-            const ladder = app.store.ladders.find(
-                (ladder) => ladder.name == "ladder"
-            );
+            const user = app.store.manager.getPlayer(testUserId);
+            const ladder = app.store.manager.getLadder(testLadderId);
 
             const response: any = await app
                 .handle(
@@ -143,10 +144,8 @@ describe("Elysia", () => {
     describe("/matches", async () => {
         const url = APP_URL + "/matches";
         test("/startMatch", async () => {
-            const ladder = app.store.ladders.find(
-                (ladder) => ladder.name == "ladder"
-            );
-            const player = app.store.users.find((user) => user.name == "user");
+            const player = app.store.manager.getPlayer(testUserId);
+            const ladder = app.store.manager.getLadder(testLadderId);
             const opponent = (await app
                 .handle(
                     new Request(APP_URL + "/users/create", {
@@ -199,10 +198,8 @@ describe("Elysia", () => {
         });
 
         test("/endMatch", async () => {
-            const ladder = app.store.ladders.find(
-                (ladder) => ladder.name == "ladder"
-            );
-            const match = ladder?.matchesOngoing[0];
+            const ladder = app.store.manager.getLadder(testLadderId);
+            const match = app.store.manager.matchesOngoing[0];
 
             const response = (await app
                 .handle(
@@ -230,10 +227,8 @@ describe("Elysia", () => {
 
     describe("Update Glicko2 ratings", async () => {
         test("/ladders/updateGlicko", async () => {
-            const ladder = app.store.ladders.find(
-                (ladder) => ladder.name == "ladder"
-            );
-            const user = app.store.users.find((user) => user.name == "user");
+            const ladder = app.store.manager.getLadder(testLadderId);
+            const user = app.store.manager.getPlayer(testUserId);
 
             const response: any = await app
                 .handle(

@@ -12,7 +12,6 @@ export type LadderParams = {
     ratingPeriod: RatingPeriod;
     elo: EloParams;
     glicko: GlickoParams;
-    matches: Match[];
     players: User[];
 };
 
@@ -23,9 +22,6 @@ export class Ladder {
     elo: Elo;
     glicko: Glicko2;
     ratingPeriod: RatingPeriod;
-
-    matches: Match[];
-    matchesOngoing: Match[];
 
     players: User[];
 
@@ -38,9 +34,6 @@ export class Ladder {
         this.glicko = new Glicko2(params.glicko);
         this.ratingPeriod = params.ratingPeriod;
 
-        this.matches = params.matches;
-        this.matchesOngoing = [];
-
         this.players = [];
         for (const user of params.players) {
             this.registerPlayer(user);
@@ -51,7 +44,7 @@ export class Ladder {
         const data = await createLadder(params);
 
         return new Ladder({
-            id: params.id ?? data.id,
+            id: data.id,
             ...params,
         });
     }
@@ -78,7 +71,7 @@ export class Ladder {
         return rating;
     }
 
-    private async updateElo(match: Match) {
+    public async updateElo(match: Match): Promise<Match> {
         const player1 = match.players[0];
         const player2 = match.players[1];
 
@@ -87,98 +80,47 @@ export class Ladder {
         await player1.updateRatings(this.id, newRatings[0]);
         await player2.updateRatings(this.id, newRatings[1]);
 
-        await updateRatedMatch(
-            match,
-            {
+        return {
+            ...match,
+            hasRatedPlayerOne: {
                 elo: true,
                 glicko: false,
             },
-            {
+            hasRatedPlayerTwo: {
                 elo: true,
                 glicko: false,
-            }
-        );
+            },
+        };
     }
 
     public async updateGlicko(player: User, matches: Match[]) {
         const filtered = matches.filter((match) =>
             match.players.includes(player)
         );
-
         const newRating = this.glicko.updateRating(player, filtered, this.id);
+        const updated = await player.updateRatings(this.id, newRating);
 
         for (const match of matches) {
             switch (match.players.indexOf(player) + 1) {
                 case 1:
-                    match.hasRatedPlayerOne = {
-                        ...match.hasRatedPlayerOne,
-                        glicko: true,
-                    };
+                    await updateRatedMatch(
+                        match,
+                        {
+                            ...match.hasRatedPlayerOne,
+                            glicko: true,
+                        },
+                        match.hasRatedPlayerTwo
+                    );
                     break;
                 case 2:
-                    match.hasRatedPlayerTwo = {
+                    await updateRatedMatch(match, match.hasRatedPlayerOne, {
                         ...match.hasRatedPlayerTwo,
                         glicko: true,
-                    };
+                    });
                     break;
             }
-            await updateRatedMatch(
-                match,
-                match.hasRatedPlayerOne,
-                match.hasRatedPlayerTwo
-            );
         }
-        return await player.updateRatings(this.id, newRating);
-    }
 
-    public async startMatch(player1: User, player2: User) {
-        if (player1.id == player2.id)
-            throw "Cannot start match with two identical users.";
-
-        if (!this.isRated(player1)) await this.registerPlayer(player1);
-        if (!this.isRated(player2)) await this.registerPlayer(player2);
-
-        const match: Match = {
-            id: crypto.randomUUID(),
-            ladderId: this.id,
-            players: [player1, player2],
-            start: new Date(),
-            finished: false,
-            score: null,
-            hasRatedPlayerOne: {
-                elo: false,
-                glicko: false,
-            },
-            hasRatedPlayerTwo: {
-                elo: false,
-                glicko: false,
-            },
-        };
-
-        this.matchesOngoing.push(match);
-
-        return match;
-    }
-
-    public async endMatch(matchId: string, score: number) {
-        const match = this.matchesOngoing.find((match) => match.id == matchId);
-
-        if (!match) throw "Couldn't find ongoing match with this id.";
-
-        const finishedMatch: Match = {
-            ...match,
-            end: new Date(),
-            finished: true,
-            score: score,
-        };
-        const createdMatch = await createMatch(finishedMatch);
-        await this.updateElo(finishedMatch);
-
-        this.matchesOngoing = this.matchesOngoing.filter(
-            (match) => match.id != matchId
-        );
-        this.matches.push(finishedMatch);
-
-        return finishedMatch;
+        return updated;
     }
 }

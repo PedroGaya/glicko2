@@ -41,7 +41,7 @@ export const createMatch = async (match: Match) => {
             id: match.id,
             ladder: {
                 connect: {
-                    id: match.ladderId,
+                    id: match.ladderId ?? undefined,
                 },
             },
             playerOne: {
@@ -57,6 +57,7 @@ export const createMatch = async (match: Match) => {
             start: match.start,
             end: match.end,
             score: match.score,
+            rated: match.rated,
             hasGlickoRatedPlayerOne: false,
             hasGlickoRatedPlayerTwo: false,
             hasEloRatedPlayerOne: true,

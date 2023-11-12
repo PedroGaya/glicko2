@@ -7,7 +7,7 @@ export const userService = new Elysia({ name: "userService" })
     .derive(({ store }) => ({
         create: async (params: UserParams) => {
             const user = await User.build(params);
-            store.users.push(user);
+            store.manager.addPlayer(user);
             return user;
         },
     }));

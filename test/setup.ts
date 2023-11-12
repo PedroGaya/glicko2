@@ -6,6 +6,7 @@ import { Ladder } from "../src/classes/ladder";
 import { Match } from "../src/types";
 import { createGame } from "../src/crud/game";
 import { NODE_ENV } from "../libs/constants";
+import { Manager } from "../src/classes/manager";
 
 let player: User | undefined,
     op1400: User | undefined,
@@ -16,6 +17,7 @@ let ladder: Ladder | undefined;
 let matches: Match[] = [];
 
 export const ladderTestParams = {
+    id: "testId",
     game: "Glickman",
     name: "Glicko2 Testing Ladder",
     elo: {
@@ -32,9 +34,13 @@ export const ladderTestParams = {
         games: 3,
         hours: 24,
     },
-    matches: [],
     players: [],
 };
+
+export const manager = new Manager({
+    players: [],
+    ladders: [],
+});
 
 beforeAll(async () => {
     if (NODE_ENV != "development")
@@ -110,28 +116,16 @@ beforeAll(async () => {
             },
         ],
     });
+
+    manager.addLadder(ladder);
+
+    manager.addPlayer(player);
+    manager.addPlayer(op1400);
+    manager.addPlayer(op1550);
+    manager.addPlayer(op1700);
 });
 
 afterAll(async () => {
     console.log("Cleaning up development database...");
     await prismaCleanup();
 });
-
-export const getTestLadder = () => {
-    if (!ladder) throw "Failed to initialize ladder.";
-    return ladder;
-};
-export const getTestPlayers = () => {
-    if (!player || !op1400 || !op1550 || !op1700)
-        throw "Failed to initialize players.";
-    return { player, op1400, op1550, op1700 };
-};
-
-export const setTestMatches = (newMatches: Match[]) => {
-    matches = newMatches;
-    return matches;
-};
-export const getTestMatches = () => {
-    if (matches.length == 0) throw "Matches haven't been set.";
-    return matches;
-};

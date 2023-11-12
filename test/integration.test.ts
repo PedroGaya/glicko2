@@ -3,13 +3,7 @@ import { test, expect, describe, afterAll } from "bun:test";
 import { Ladder } from "../src/classes/ladder";
 import { User } from "../src/classes/user";
 
-import {
-    ladderTestParams,
-    getTestLadder,
-    getTestPlayers,
-    setTestMatches,
-    getTestMatches,
-} from "./setup";
+import { ladderTestParams, manager } from "./setup";
 import { loadData } from "../src/crud/load";
 import { getLadderRatings } from "../src/crud/rating";
 import { getUserMatches } from "../src/crud/match";
@@ -17,7 +11,7 @@ import { prismaCleanup } from "../libs/prisma";
 
 describe("Create the basic data entities.", async () => {
     test("Create a ladder", async () => {
-        const ladder = getTestLadder();
+        const ladder = manager.getLadder(ladderTestParams.id);
         const params = ladderTestParams;
 
         expect(ladder).toBeInstanceOf(Ladder);
@@ -33,25 +27,27 @@ describe("Create the basic data entities.", async () => {
         );
         expect(ladder.glicko.tau).toBe(params.glicko.tau);
 
-        expect(ladder.matches).toBeArrayOfSize(0);
         expect(ladder.players).toBeArrayOfSize(0);
     });
 
     test("Create players", async () => {
-        const ladder = getTestLadder();
-        const { player, op1400, op1550, op1700 } = getTestPlayers();
+        const ladder = manager.getLadder(ladderTestParams.id);
+        const player = manager.players[0];
+        const op1400 = manager.players[1];
+        const op1550 = manager.players[2];
+        const op1700 = manager.players[3];
 
         expect(player).toBeInstanceOf(User);
         expect(player.id).toBeString();
 
-        await ladder.registerPlayer(player);
-        await ladder.registerPlayer(op1400);
-        await ladder.registerPlayer(op1550);
-        await ladder.registerPlayer(op1700);
+        await ladder?.registerPlayer(player);
+        await ladder?.registerPlayer(op1400);
+        await ladder?.registerPlayer(op1550);
+        await ladder?.registerPlayer(op1700);
 
         expect(player.getRating(ladder.id)).toEqual({
-            elo: ladder.elo.getNewRating(),
-            glicko: ladder.glicko.getNewRating(),
+            elo: ladder?.elo.getNewRating(),
+            glicko: ladder?.glicko.getNewRating(),
         });
         expect(op1700.getRating(ladder.id)).toEqual({
             elo: {
@@ -65,19 +61,23 @@ describe("Create the basic data entities.", async () => {
             },
         });
 
-        expect(ladder.players).toBeArrayOfSize(4);
+        expect(ladder?.players).toBeArrayOfSize(4);
     });
 });
 
 describe("Play some matches and calculate rating updates", async () => {
     test("Start matches", async () => {
-        const ladder = getTestLadder();
-        const { player, op1400, op1550, op1700 } = getTestPlayers();
-        const matches = setTestMatches([
-            await ladder.startMatch(player, op1400),
-            await ladder.startMatch(player, op1550),
-            await ladder.startMatch(op1700, player),
-        ]);
+        const ladder = manager.getLadder(ladderTestParams.id);
+        const player = manager.players[0];
+        const op1400 = manager.players[1];
+        const op1550 = manager.players[2];
+        const op1700 = manager.players[3];
+
+        await manager.startMatch(ladder.id, player, op1400, true);
+        await manager.startMatch(ladder.id, player, op1550, true);
+        await manager.startMatch(ladder.id, op1700, player, true);
+
+        const matches = manager.matchesOngoing;
 
         expect(matches[0].score).toBeNull();
         expect(matches[0].hasRatedPlayerOne).toEqual({
@@ -85,22 +85,22 @@ describe("Play some matches and calculate rating updates", async () => {
             glicko: false,
         });
 
-        expect(ladder.matchesOngoing).toBeArrayOfSize(3);
+        expect(manager.matchesOngoing).toBeArrayOfSize(3);
     });
 
-    test("Finish matches", async () => {
-        const ladder = getTestLadder();
-        const matches = getTestMatches();
+    test("Finish matches and calculate ratings", async () => {
+        const ladder = manager.getLadder(ladderTestParams.id);
+        const player = manager.players[0];
+        const op1400 = manager.players[1];
+        const op1700 = manager.players[3];
+        const matches = [...manager.matchesOngoing];
 
-        const m1 = await ladder.endMatch(matches[0].id, 1);
-        const m2 = await ladder.endMatch(matches[1].id, 0);
+        const m1 = await manager.endMatch(matches[0].id, 1);
+        const m2 = await manager.endMatch(matches[1].id, 0);
 
-        expect(ladder.matchesOngoing).toBeArrayOfSize(1);
-        expect(ladder.matches).toBeArrayOfSize(2);
+        expect(manager.matchesOngoing).toBeArrayOfSize(1);
 
-        const m3 = await ladder.endMatch(matches[2].id, 1);
-
-        setTestMatches([m1, m2, m3]);
+        const m3 = await manager.endMatch(matches[2].id, 1);
 
         expect(m1.score).toBe(1);
         expect(m1.hasRatedPlayerOne).toEqual({
@@ -108,14 +108,7 @@ describe("Play some matches and calculate rating updates", async () => {
             glicko: false,
         });
 
-        expect(ladder.matchesOngoing).toBeArrayOfSize(0);
-        expect(ladder.matches).toBeArrayOfSize(3);
-    });
-
-    test("Calculate ratings", async () => {
-        const ladder = getTestLadder();
-        const { player, op1400, op1550, op1700 } = getTestPlayers();
-        const matches = getTestMatches();
+        expect(manager.matchesOngoing).toBeArrayOfSize(0);
 
         const playerRating = {
             glicko: {
@@ -141,7 +134,7 @@ describe("Play some matches and calculate rating updates", async () => {
             },
         };
 
-        await ladder.updateGlicko(player, matches);
+        await ladder.updateGlicko(player, [m1, m2, m3]);
         expect(player.getRating(ladder.id)).toEqual(playerRating);
         expect(ladder.glicko.getGXE(op1400.getRating(ladder.id))).toEqual(
             40.51
@@ -151,43 +144,33 @@ describe("Play some matches and calculate rating updates", async () => {
 });
 
 describe("Load data and recreate state", () => {
-    const userPool: User[] = [];
-    const ladderPool: Ladder[] = [];
-
     test("Recreate state", async () => {
-        await loadData(userPool, ladderPool);
+        const expectedPlayer = manager.players[0];
+        const expectedLadder = manager.ladders[0];
 
-        expect(userPool).toBeArrayOfSize(4);
-        expect(ladderPool).toBeArrayOfSize(1);
+        await manager.synchronize();
 
-        const expectedPlayer = getTestPlayers()["player"];
-        const testPlayer = userPool.find((user) => user.name == "player");
+        expect(manager.players).toBeArrayOfSize(4);
+        expect(manager.ladders).toBeArrayOfSize(1);
 
-        const expectedLadder = getTestLadder();
-        const testLadder = ladderPool.find(
-            (ladder) => ladder.id == expectedLadder.id
-        );
+        const testLadder = manager.getLadder(expectedLadder.id);
+        const testPlayer = manager.getPlayer(expectedPlayer.id);
 
         expect(testLadder).toEqual(expectedLadder);
         expect(testPlayer).toEqual(expectedPlayer);
     });
 
     test("Check ladder ratings", async () => {
-        const ladder = ladderPool.find(
-            (ladder) => ladder.id == getTestLadder().id
-        );
-        if (!ladder) throw "Failed to load ladder.";
-
+        const ladder = manager.ladders[0];
         const ratings = await getLadderRatings(ladder.id);
+
         expect(ratings).toBeArrayOfSize(4);
         expect(ratings.map((r) => r.userId)).toContain(ladder.players[0].id);
     });
 
     test("Check user matches", async () => {
-        const player = userPool.find((user) => user.name == "player");
-        const ladder = ladderPool.find(
-            (ladder) => ladder.id == getTestLadder().id
-        );
+        const player = manager.players[0];
+        const ladder = manager.ladders[0];
 
         if (!ladder) throw "Failed to load ladder.";
         if (!player) throw "Failed to load player.";

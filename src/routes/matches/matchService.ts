@@ -13,10 +13,10 @@ export const matchService = new Elysia({ name: "matchService" })
             const p2 = getUser(playerTwoId);
             const ladder = getLadder(ladderId);
 
-            return await ladder.startMatch(p1, p2);
+            return await store.manager.startMatch(ladderId, p1, p2, true);
         },
         endMatch: async (ladderId: string, matchId: string, score: number) => {
             const ladder = getLadder(ladderId);
-            return await ladder.endMatch(matchId, score);
+            return await store.manager.endMatch(matchId, score);
         },
     }));

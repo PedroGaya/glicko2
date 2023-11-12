@@ -65,6 +65,7 @@ export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
                 start: data.start,
                 finished: true,
                 score: data.score,
+                rated: data.rated,
                 hasRatedPlayerOne: {
                     elo: data.hasEloRatedPlayerOne,
                     glicko: data.hasGlickoRatedPlayerOne,
@@ -100,7 +101,6 @@ export const loadData = async (userPool: User[], ladderPool: Ladder[]) => {
                 tau: data.glickoTau,
             },
             players: players,
-            matches: matches,
         };
         const ladder = new Ladder(params);
         ladderPool.push(ladder);

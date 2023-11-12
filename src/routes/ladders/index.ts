@@ -8,7 +8,7 @@ const users = new Elysia({ prefix: "/ladders" })
     .post(
         "/create",
         async ({ create, body }) => {
-            return await create({ ...body, matches: [], players: [] });
+            return await create({ ...body, players: [] });
         },
         { body: "createLadderSchema" }
     )
