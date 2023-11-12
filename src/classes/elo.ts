@@ -27,7 +27,10 @@ export class Elo {
     }
 
     public updateRating(m: Match): Rating[] {
-        const { ladderId, players, score } = m;
+        const { ladderId, players, score, rated } = m;
+
+        if (rated) throw "Attempted to elo rate an unrated match.";
+        if (!ladderId) throw "Can't rate match on null ladderId.";
 
         const p1r = players[0].getRating(ladderId);
         const p2r = players[1].getRating(ladderId);
