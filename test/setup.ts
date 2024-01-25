@@ -43,7 +43,7 @@ export const manager = new Manager({
 });
 
 beforeAll(async () => {
-    if (NODE_ENV != "development")
+    if (NODE_ENV == "production")
         throw "Running integration tests in production! Aborting.";
 
     console.log("Reseting development database before tests...");
